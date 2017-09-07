@@ -1,3 +1,7 @@
+""" ``physics`` contains useful physics functions as well as constants.
+
+"""
+
 import numpy as np
 
 # Fundamental constants
