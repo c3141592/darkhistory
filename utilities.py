@@ -42,7 +42,7 @@ def is_log_spaced(arr):
             True if equal, False otherwise.
 
     """
-    return np.ptp(np.diff(np.log(arr)))
+    return not bool(np.ptp(np.diff(np.log(arr))))
 
 def div_ignore_by_zero(a, b, val=0):
     """ Divides `a` by `b`, returning `val` if a divide-by-zero error occurs.

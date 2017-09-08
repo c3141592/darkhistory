@@ -6,3 +6,4 @@ darkhistory
 
    physics
    utilities
+   spectrum
