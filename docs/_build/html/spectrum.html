@@ -37,7 +37,8 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="DarkHistory  documentation" href="index.html"/>
         <link rel="up" title="darkhistory" href="modules.html"/>
-        <link rel="prev" title="utilities module" href="utilities.html"/> 
+        <link rel="next" title="utilities module" href="utilities.html"/>
+        <link rel="prev" title="physics module" href="physics.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -90,8 +91,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">darkhistory</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="physics.html">physics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">spectrum module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +162,14 @@
             
   <div class="section" id="module-spectrum">
 <span id="spectrum-module"></span><h1>spectrum module<a class="headerlink" href="#module-spectrum" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal"><span class="pre">spectrum</span></code> contains functions and classes for processing spectral data.</p>
+<p>Spectrum contains functions and classes for processing spectral data.</p>
+<dl class="exception">
+<dt id="spectrum.NotLogBinned">
+<em class="property">exception </em><code class="descclassname">spectrum.</code><code class="descname">NotLogBinned</code><a class="headerlink" href="#spectrum.NotLogBinned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Exception when something is not log-binned.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="spectrum.Spectrum">
 <em class="property">class </em><code class="descclassname">spectrum.</code><code class="descname">Spectrum</code><span class="sig-paren">(</span><em>eng</em>, <em>dNdE</em>, <em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum" title="Permalink to this definition">¶</a></dt>
@@ -171,93 +179,87 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>eng, dNdE</strong> : array_like</p>
-<blockquote>
-<div><p>Abscissa for the spectrum, and spectrum stored as dN/dE.</p>
-</div></blockquote>
-<p><strong>rs</strong> : float</p>
-<blockquote class="last">
-<div><p>The redshift (1+z) of the spectrum.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eng</strong> (<em>ndarray</em>) – Abscissa for the spectrum.</li>
+<li><strong>dNdE</strong> (<em>ndarray</em>) – Spectrum stored as dN/dE.</li>
+<li><strong>rs</strong> (<em>float</em>) – The redshift (1+z) of the spectrum.</li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="18%" />
-<col width="82%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>length</strong></td>
-<td>(int) The length of the <cite>eng</cite> and <cite>dNdE</cite>.</td>
-</tr>
-<tr class="row-even"><td><strong>underflow</strong></td>
-<td>(dict of str: float) The underflow total number of particles and total energy.</td>
-</tr>
-<tr class="row-odd"><td><strong>log_bin_width</strong></td>
-<td>(float) The log bin width.</td>
-</tr>
-<tr class="row-even"><td><strong>bin_boundary</strong></td>
-<td>(ndarray) The boundary of each energy bin. Has one more entry than <cite>length</cite>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="spectrum.Spectrum.length">
+<code class="descname">length</code><a class="headerlink" href="#spectrum.Spectrum.length" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – The length of the <cite>eng</cite> and <cite>dNdE</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spectrum.Spectrum.underflow">
+<code class="descname">underflow</code><a class="headerlink" href="#spectrum.Spectrum.underflow" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict of str: float</em> – The underflow total number of particles and total energy.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spectrum.Spectrum.log_bin_width">
+<code class="descname">log_bin_width</code><a class="headerlink" href="#spectrum.Spectrum.log_bin_width" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – The log bin width. 0 if not log-binned.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spectrum.Spectrum.bin_boundary">
+<code class="descname">bin_boundary</code><a class="headerlink" href="#spectrum.Spectrum.bin_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>ndarray</em> – The boundary of each energy bin. Has one more entry than <cite>length</cite>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="spectrum.Spectrum.__add__">
 <code class="descname">__add__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__add__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds two <code class="docutils literal"><span class="pre">Spectrum</span></code> instances together, or an array to <cite>self.dNdE</cite>. The Spectrum object is on the left.</p>
+<dd><p>Adds two Spectrum instances together, or an array to the spectrum. The Spectrum object is on the left.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : Spectrum, ndarray, float or int</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum"><em>Spectrum</em></a><em>, </em><em>ndarray</em><em>, </em><em>float</em><em> or </em><em>int</em>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the summed spectrum.</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the summed spectrum.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__radd__</cite>, allows the use of the symbol + to add Spectrum objects together.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a Spectrum object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__radd__" title="spectrum.Spectrum.__radd__"><code class="xref py py-obj docutils literal"><span class="pre">__radd__</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__radd__" title="spectrum.Spectrum.__radd__"><code class="xref py py-meth docutils literal"><span class="pre">__radd__()</span></code></a></p>
 </div>
-<p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__radd__</cite>, allows the use of the symbol + to add <code class="docutils literal"><span class="pre">Spectrum</span></code> objects together.</p>
-<p>Underflow is reset to zero if <cite>other</cite> is not a <code class="docutils literal"><span class="pre">Spectrum</span></code> object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="spectrum.Spectrum.__mul__">
 <code class="descname">__mul__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__mul__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the product of one <code class="docutils literal"><span class="pre">Spectrum</span></code> object with another array. <code class="docutils literal"><span class="pre">Spectrum</span></code> object is on the left.</p>
+<dd><p>Takes the product of the spectrum with an array or number. Spectrum object is on the left.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : ndarray, float or int</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>ndarray</em><em>, </em><em>float</em><em> or </em><em>int</em>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the multiplied <cite>dNdE</cite>.</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the multiplied <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__rmul__</cite>, allows the use of the symbol * to multiply Spectrum objects or an array and Spectrum.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a Spectrum object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rmul__" title="spectrum.Spectrum.__rmul__"><code class="xref py py-obj docutils literal"><span class="pre">__rmul__</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rmul__" title="spectrum.Spectrum.__rmul__"><code class="xref py py-meth docutils literal"><span class="pre">__rmul__()</span></code></a></p>
 </div>
-<p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__rmul__</cite>, allows the use of the symbol * to multiply <code class="docutils literal"><span class="pre">Spectrum</span></code> objects or an array and <code class="docutils literal"><span class="pre">Spectrum</span></code>.</p>
-<p>Underflow is reset to zero if <cite>other</cite> is not a <code class="docutils literal"><span class="pre">Spectrum</span></code> object.</p>
 </dd></dl>
 
 <dl class="method">
@@ -268,11 +270,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance with the spectrum negated.</p>
-</div></blockquote>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance with the spectrum negated.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
@@ -281,112 +281,236 @@
 <dl class="method">
 <dt id="spectrum.Spectrum.__radd__">
 <code class="descname">__radd__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__radd__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds two <code class="docutils literal"><span class="pre">Spectrum</span></code> instances together, or an array to <cite>self.dNdE</cite>. The Spectrum object is on the right.</p>
+<dd><p>Adds two Spectrum instances together, or an array to the spectrum. The Spectrum object is on the right.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : Spectrum, ndarray</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum"><em>Spectrum</em></a><em>, </em><em>ndarray</em>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the summed spectrum.</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the summed spectrum.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__add__</cite>, allows the use of the symbol + to add Spectrum objects together.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a Spectrum object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__add__" title="spectrum.Spectrum.__add__"><code class="xref py py-obj docutils literal"><span class="pre">__add__</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__add__" title="spectrum.Spectrum.__add__"><code class="xref py py-meth docutils literal"><span class="pre">__add__()</span></code></a></p>
 </div>
-<p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__add__</cite>, allows the use of the symbol + to add <code class="docutils literal"><span class="pre">Spectrum</span></code> objects together.</p>
-<p>Underflow is reset to zero if <cite>other</cite> is not a <code class="docutils literal"><span class="pre">Spectrum</span></code> object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="spectrum.Spectrum.__rmul__">
 <code class="descname">__rmul__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__rmul__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the product of one <code class="docutils literal"><span class="pre">Spectrum</span></code> object with another array. <code class="docutils literal"><span class="pre">Spectrum</span></code> object is on the right.</p>
+<dd><p>Takes the product of the spectrum with an array or number. Spectrum object is on the right.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : ndarray, float or int</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>ndarray</em><em>, </em><em>float</em><em> or </em><em>int</em>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the multiplied <cite>dNdE</cite>.</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the multiplied <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__mul__</cite>, allows the use of the symbol * to multiply Spectrum objects or an array and Spectrum.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a Spectrum object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__mul__" title="spectrum.Spectrum.__mul__"><code class="xref py py-obj docutils literal"><span class="pre">__mul__</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__mul__" title="spectrum.Spectrum.__mul__"><code class="xref py py-meth docutils literal"><span class="pre">__mul__()</span></code></a></p>
 </div>
-<p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__mul__</cite>, allows the use of the symbol * to multiply <code class="docutils literal"><span class="pre">Spectrum</span></code> objects or an array and <code class="docutils literal"><span class="pre">Spectrum</span></code>.</p>
-<p>Underflow is reset to zero if <cite>other</cite> is not a <code class="docutils literal"><span class="pre">Spectrum</span></code> object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="spectrum.Spectrum.__rsub__">
 <code class="descname">__rsub__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__rsub__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subtracts one <code class="docutils literal"><span class="pre">Spectrum</span></code> instance from another, or subtracts self.dNdE` from another.</p>
+<dd><p>Subtracts one Spectrum instance from another, or subtracts the spectrum from an array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : Spectrum, ndarray, float or int</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum"><em>Spectrum</em></a><em> or </em><em>ndarray</em>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the subtracted <cite>dNdE</cite>.</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the subtracted <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__sub__</cite>, allows the use of the symbol - to subtract or subtract from Spectrum objects.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__sub__" title="spectrum.Spectrum.__sub__"><code class="xref py py-obj docutils literal"><span class="pre">__sub__</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__sub__" title="spectrum.Spectrum.__sub__"><code class="xref py py-meth docutils literal"><span class="pre">__sub__()</span></code></a></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.__rtruediv__">
+<code class="descname">__rtruediv__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__rtruediv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divides a number or array by the spectrum.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>ndarray</em><em>, </em><em>float</em><em> or </em><em>int</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the divided <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__sub__</cite>, allows the use of the symbol - to subtract or subtract from <code class="docutils literal"><span class="pre">Spectrum</span></code> objects.</p>
+<p>This special function, together with <cite>Spectrum.__truediv__</cite>, allows the use of the symbol / to multiply Spectrum objects or an array and Spectrum.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="spectrum.Spectrum.__sub__">
 <code class="descname">__sub__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__sub__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subtracts one <code class="docutils literal"><span class="pre">Spectrum</span></code> instance from another, or subtracts an array from <cite>self.dNdE</cite>.</p>
+<dd><p>Subtracts one Spectrum instance from another, or subtracts an array from the spectrum.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : Spectrum, ndarray, float or int</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum"><em>Spectrum</em></a><em> or </em><em>ndarray</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the subtracted <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__rsub__</cite>, allows the use of the symbol - to subtract or subtract from Spectrum objects.</p>
+<p>The returned Spectrum object nderflow is reset to zero if <cite>other</cite> is not a Spectrum object.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rsub__" title="spectrum.Spectrum.__rsub__"><code class="xref py py-meth docutils literal"><span class="pre">__rsub__()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.__truediv__">
+<code class="descname">__truediv__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.__truediv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divides the spectrum by an array or number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<em>ndarray</em><em>, </em><em>float</em><em> or </em><em>int</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Spectrum instance which has the divided <cite>dNdE</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This special function, together with <cite>Spectrum.__truediv__</cite>, allows the use of the symbol / to multiply Spectrum objects or an array and Spectrum.</p>
+<p>The returned Spectrum object <cite>underflow</cite> is reset to zero.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.contract">
+<code class="descname">contract</code><span class="sig-paren">(</span><em>mat</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.contract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a dot product on the spectrum with another array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mat</strong> (<em>ndarray</em>) – The array to dot into the spectrum with.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The resulting dot product.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.rebin">
+<code class="descname">rebin</code><span class="sig-paren">(</span><em>new_eng</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.rebin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-bins the spectrum according to a new abscissa, conserving total number and total energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_eng</strong> (<em>ndarray</em>) – The new abscissa to bin into. If <cite>new_eng[-1]</cite> exceeds the largest entry in the current abscissa, then the new underflow will be filled. If <cite>new_eng[-1]</cite> is smaller, then it will be filled with all of the overflow.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The final Spectrum object with the new binning.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.totN">
+<code class="descname">totN</code><span class="sig-paren">(</span><em>type='all'</em>, <em>low=None</em>, <em>upp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.totN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total number of particles in all of the bins between some bounds of a given <cite>type</cite>, specified by <cite>low</cite> and <cite>upp</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> (<em>{'all'</em><em>, </em><em>'bin'</em><em>, </em><em>'eng'}</em>) – <p>The type of bounds to use. Bound values do not have to be within the [0:length] for <cite>‘bin’</cite> or within the abscissa for <cite>‘eng’</cite>.</p>
+<p><cite>’bin’</cite> : bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram.</p>
+<p><cite>’eng’</cite> : bounds are specified by energy values.</p>
+<p><cite>’all’</cite> : total particle number stored in the spectrum.</p>
+</li>
+<li><strong>low</strong> (<em>float</em><em>, </em><em>optional</em>) – The lower bound for the total.</li>
+<li><strong>upp</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The upper bound for the total.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Spectrum</p>
-<blockquote class="last">
-<div><p>New <code class="docutils literal"><span class="pre">Spectrum</span></code> instance which has the subtracted <cite>dNdE</cite>.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Total number of particles in the spectrum.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rsub__" title="spectrum.Spectrum.__rsub__"><code class="xref py py-obj docutils literal"><span class="pre">__rsub__</span></code></a></p>
-</div>
-<p class="rubric">Notes</p>
-<p>This special function, together with <cite>Spectrum.__rsub__</cite>, allows the use of the symbol - to subtract or subtract from <code class="docutils literal"><span class="pre">Spectrum</span></code> objects.</p>
-<p>Underflow is reset to zero if <cite>other</cite> is not a <code class="docutils literal"><span class="pre">Spectrum</span></code> object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spectrum.Spectrum.toteng">
+<code class="descname">toteng</code><span class="sig-paren">(</span><em>type='all'</em>, <em>low=None</em>, <em>upp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.Spectrum.toteng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total energy of particles in all of the bins between some bounds of a given <cite>type</cite>, specified by <cite>low</cite> and <cite>upp</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> (<em>{'all'</em><em>, </em><em>'bin'</em><em>, </em><em>'eng'}</em>) – <p>The type of bounds to use. Bound values do not have to be within the [0:length] for <cite>‘bin’</cite> or within the abscissa for <cite>‘eng’</cite>.</p>
+<p><cite>’bin’</cite> : bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram.</p>
+<p><cite>’eng’</cite> : bounds are specified by energy values.</p>
+<p><cite>’all’</cite> : total particle number stored in the spectrum.</p>
+</li>
+<li><strong>low</strong> (<em>float</em><em>, </em><em>optional</em>) – The lower bound for the total.</li>
+<li><strong>upp</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The upper bound for the total.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Total energy in the spectrum.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -403,8 +527,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="utilities.html" class="btn btn-neutral float-right" title="utilities module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="utilities.html" class="btn btn-neutral" title="utilities module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="physics.html" class="btn btn-neutral" title="physics module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -5,5 +5,5 @@ darkhistory
    :maxdepth: 4
 
    physics
-   utilities
    spectrum
+   utilities
