@@ -1,8 +1,8 @@
 darkhistory
 ===========
 
-.. toctree::
-   :maxdepth: 4
+.. autosummary::
+   :toctree: _autosummary
 
    physics
    spectrum

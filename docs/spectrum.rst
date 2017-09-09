@@ -1,7 +1,18 @@
 spectrum module
 ===============
-
 .. automodule:: spectrum
-    :members:
-    :undoc-members:
-    :show-inheritance:
+    
+    .. rubric:: Methods
+
+    .. autofunction:: get_bin_bound
+    .. autofunction:: discretize
+
+    .. rubric:: Classes
+
+    .. autoclass:: spectrum.Spectrum
+        :members:
+
+        .. rubric:: Methods
+
+        .. autoautosummary:: spectrum.Spectrum
+            :methods:
