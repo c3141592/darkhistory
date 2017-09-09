@@ -5,73 +5,95 @@
 import numpy as np
 
 # Fundamental constants
-mp          = 0.938e9                     # proton mass in eV
-me          = 510998.9                    # electron mass in eV
-hbar        = 6.58211951e-16              # hbar in eV s
-c           = 299792458e2                 # speed of light in cm/s
-kB          = 8.6173324e-5                # Boltzmann constant in eV/K
-alpha       = 1/137.035999139             # fine structure constant
+mp          = 0.938e9                     
+"""Proton mass in eV."""
+me          = 510998.9
+"""Electron mass in eV."""
+hbar        = 6.58211951e-16
+"""hbar in eV s."""
+c           = 299792458e2
+"""Speed of light in cm/s."""
+kB          = 8.6173324e-5
+"""Boltzmann constant in eV/K."""
+alpha       = 1/137.035999139
+"""Fine structure constant."""
 ele         = 1.60217662e-19
+"""Electron charge in C."""
 
 # Atomic and optical physics
 
-# Thomson cross section in cm^2
 thomson_xsec = 6.652458734e-25
-# Stefan-Boltzmann constant in eV^-3 cm^-2 s^2
+"""Thomson cross section in cm^2."""
 stefboltz    = np.pi**2 / (60 * (hbar**3) * (c**2))
-# 1 rydberg in eV
+"""Stefan-Boltzmann constant in eV^-3 cm^-2 s^2."""
 rydberg      = 13.60569253
-# Lyman alpha transition energy in eV
+"""Ionization potential of ground state hydrogen."""
 lya_eng      = rydberg*3/4
-# Lyman alpha transition frequency in Hz
+"""Lyman alpha transition energy in eV."""
 lya_freq     = lya_eng / (2*np.pi*hbar)
-# Hydrogen 2s to 1s decay width in s^-1
+"""Lyman alpha transition frequency in Hz."""
 width_2s1s    = 8.23
-# Bohr radius in cm
+"""Hydrogen 2s to 1s decay width in s^-1."""
 bohr_rad     = (hbar*c) / (me*alpha)
-# Classical electron radius in cm
+"""Bohr radius in cm."""
 ele_rad      = bohr_rad * (alpha**2)
-# Electron compton wavelength in cm
+"""Classical electron radius in cm."""
 ele_compton  = 2*np.pi*hbar*c/me
+"""Electron Compton wavelength in cm."""
 
 # Hubble
 
 h    = 0.6727
-H0   = 100*h*3.241e-20                    # Hubble constant in s
+""" h parameter."""
+H0   = 100*h*3.241e-20
+""" Hubble parameter today in s^-1."""
 
 # Omegas
 
-omegaM      = 0.3156 
-omegaRad    = 8e-5
-omegaLambda = 0.6844
-omegaB      = 0.02225/(h**2)
-omegaDM     = 0.1198/(h**2)
+omega_m      = 0.3156 
+""" Omega of all matter today."""
+omega_rad    = 8e-5
+""" Omega of radiation today."""
+omega_lambda = 0.6844
+""" Omega of dark energy today."""
+omega_baryon = 0.02225/(h**2)
+""" Omega of baryons today."""
+omega_DM      = 0.1198/(h**2)
+""" Omega of dark matter today."""
 
 # Densities
 
-rhoCrit     = 1.05375e4*(h**2)            # in eV/cm^3
-rhoDM       = rhoCrit*omegaDM
-rhoB        = rhoCrit*omegaB
-nB          = rhoB/mp
-YHe         = 0.250                       # Helium mass abundance from the PDG
+rho_crit     = 1.05375e4*(h**2)
+""" Critical density of the universe in eV/cm^3."""
+rho_DM       = rho_crit*omega_DM
+""" DM density in eV/cm^3."""
+rho_baryon   = rho_crit*omega_baryon
+""" Baryon density in eV/cm^3."""
+nB          = rho_baryon/mp
+""" Baryon number density in cm^-3."""
+YHe         = 0.250                       
+"""Helium abundance by mass."""
 nH          = (1-YHe)*nB
+""" Atomic hydrogen number density in cm^-3."""
 nHe         = (YHe/4)*nB
+""" Atomic helium number density in cm^-3."""
 nA          = nH + nHe
+""" Hydrogen and helium number density in cm^-3."""
 
 # Cosmology functions
 
-def hubblerates(rs, H0=H0, omegaM=omegaM, omegaRad=omegaRad, omegaLambda=omegaLambda): 
-    return H0*np.sqrt(omegaRad*rs**4 + omegaM*rs**3 + omegaLambda)
+def hubble(rs, H0=H0, omega_m=omega_m, omega_rad=omega_rad, omega_lambda=omega_lambda): 
+    return H0*np.sqrt(omega_rad*rs**4 + omega_m*rs**3 + omega_lambda)
 
-def dtdz(rs, H0=H0, omegaM=omegaM, omegaRad=omegaRad, omegaLambda=omegaLambda):
+def dtdz(rs, H0=H0, omega_m=omega_m, omega_rad=omega_rad, omega_lambda=omega_lambda):
 
-    return 1/(rs*hubblerates(rs, H0, omegaM, omegaRad, omegaLambda))
+    return 1/(rs*hubblerates(rs, H0, omega_m, omega_rad, omega_lambda))
 
 def TCMB(rs): 
 
     return 0.235e-3 * rs
 
-def getinjrate(injType,injFac):
+def get_inj_rate(injType,injFac):
 
     engThres = {'H0':rydberg, 'He0':24.6, 'He1':4*rydberg}
 
@@ -107,7 +129,7 @@ def getinjrate(injType,injFac):
 
     return xsec 
 
-def photoionrate(rs, eng, xH, xe, atom=None):
+def photo_ion_rate(rs, eng, xH, xe, atom=None):
     """Returns the photoionization rate at a particular redshift, given some ionization history.
 
     Parameters
@@ -145,7 +167,7 @@ def photoionrate(rs, eng, xH, xe, atom=None):
 
 # Atomic Cross-Sections
 
-def photoionxsec(eng, species):
+def photo_ion_xsec(eng, species):
 
     engThres = {'H0':rydberg, 'He0':24.6, 'He1':4*rydberg}
 
@@ -181,49 +203,14 @@ def photoionxsec(eng, species):
 
     return xsec 
 
-def photoionrate(rs, eng, xH, xe, atom=None):
-    """Returns the photoionization rate at a particular redshift, given some ionization history.
-
-    Parameters
-    ----------
-    rs : float
-        Redshift at which the photoionization rate is to be obtained.
-    eng : ndarray
-        Energies at which the photoionization rate is to be obtained. 
-    xH : float
-        Ionization fraction n_H+/n_H. 
-    xe : float
-        Ionization fraction n_e/n_H = n_H+/n_H + n_He+/n_H.
-    atom : str, optional
-        A string that must be one of ``'H0'``, ``'He0'`` or ``'He1'``. Determines which photoionization rate is returned. The default value is ``None``, which returns all of the rates in a dict. 
-    
-    Returns
-    -------
-    ionrate : dict
-        Returns a dictionary with keys ``'H0'``, ``'He0'`` and ``'He1'``, each with an ndarray of the same length as `eng`.
-
-    """
-    atoms = ['H0', 'He0', 'He1']
-
-    xHe = xe - xH
-    atomDensities = {'H0':nH*(1-xH)*rs**3, 'He0':(nHe - xHe*nH)*rs**3, 'He1':xHe*nH*rs**3}
-
-    ionRate = {atom: photoionxsec(eng,atom)*atomDensities[atom]*c for atom in atoms}
-
-    if atom is not None:
-        return ionRate[atom]
-    else:
-        return sum([ionRate[atom] for atom in atoms])
-
-
-def tausobolev(rs):
+def tau_sobolev(rs):
     xSec = 2 * np.pi * 0.416 * np.pi * alpha * hbar * c ** 2 / me
     lyaFreq = lyaEng / hbar
     return nH * rs ** 3 * xSec * c / (hubblerates(rs) * lyaFreq)
 
 # CMB
 
-def CMBspectrum(temp, eng):
+def CMB_spec(temp, eng):
     """Returns the CMB spectrum in number of photons/cm^3/eV, for a given temperature and energy of the photon.
 
     Parameters

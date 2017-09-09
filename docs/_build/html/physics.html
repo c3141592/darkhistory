@@ -154,8 +154,8 @@
 <span id="physics-module"></span><h1>physics module<a class="headerlink" href="#module-physics" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">physics</span></code> contains useful physics functions as well as constants.</p>
 <dl class="function">
-<dt id="physics.CMBspectrum">
-<code class="descclassname">physics.</code><code class="descname">CMBspectrum</code><span class="sig-paren">(</span><em>temp</em>, <em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.CMBspectrum" title="Permalink to this definition">¶</a></dt>
+<dt id="physics.CMB_spec">
+<code class="descclassname">physics.</code><code class="descname">CMB_spec</code><span class="sig-paren">(</span><em>temp</em>, <em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.CMB_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the CMB spectrum in number of photons/cm^3/eV, for a given temperature and energy of the photon.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -177,29 +177,173 @@
 </table>
 </dd></dl>
 
+<dl class="data">
+<dt id="physics.H0">
+<code class="descclassname">physics.</code><code class="descname">H0</code><em class="property"> = 2.1802207e-18</em><a class="headerlink" href="#physics.H0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hubble parameter today in s^-1.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="physics.TCMB">
 <code class="descclassname">physics.</code><code class="descname">TCMB</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.TCMB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="data">
+<dt id="physics.YHe">
+<code class="descclassname">physics.</code><code class="descname">YHe</code><em class="property"> = 0.25</em><a class="headerlink" href="#physics.YHe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helium abundance by mass.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.alpha">
+<code class="descclassname">physics.</code><code class="descname">alpha</code><em class="property"> = 0.007297352566354976</em><a class="headerlink" href="#physics.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fine structure constant.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.bohr_rad">
+<code class="descclassname">physics.</code><code class="descname">bohr_rad</code><em class="property"> = 5.291772581084844e-09</em><a class="headerlink" href="#physics.bohr_rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bohr radius in cm.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.c">
+<code class="descclassname">physics.</code><code class="descname">c</code><em class="property"> = 29979245800.0</em><a class="headerlink" href="#physics.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speed of light in cm/s.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="physics.dtdz">
-<code class="descclassname">physics.</code><code class="descname">dtdz</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omegaM=0.3156</em>, <em>omegaRad=8e-05</em>, <em>omegaLambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.dtdz" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">physics.</code><code class="descname">dtdz</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omega_m=0.3156</em>, <em>omega_rad=8e-05</em>, <em>omega_lambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.dtdz" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="physics.getinjrate">
-<code class="descclassname">physics.</code><code class="descname">getinjrate</code><span class="sig-paren">(</span><em>injType</em>, <em>injFac</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.getinjrate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="data">
+<dt id="physics.ele">
+<code class="descclassname">physics.</code><code class="descname">ele</code><em class="property"> = 1.60217662e-19</em><a class="headerlink" href="#physics.ele" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electron charge in C.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.ele_compton">
+<code class="descclassname">physics.</code><code class="descname">ele_compton</code><em class="property"> = 2.4263104541371187e-10</em><a class="headerlink" href="#physics.ele_compton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electron Compton wavelength in cm.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.ele_rad">
+<code class="descclassname">physics.</code><code class="descname">ele_rad</code><em class="property"> = 2.8179405753065666e-13</em><a class="headerlink" href="#physics.ele_rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classical electron radius in cm.</p>
+</dd></dl>
 
 <dl class="function">
-<dt id="physics.hubblerates">
-<code class="descclassname">physics.</code><code class="descname">hubblerates</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omegaM=0.3156</em>, <em>omegaRad=8e-05</em>, <em>omegaLambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.hubblerates" title="Permalink to this definition">¶</a></dt>
+<dt id="physics.get_inj_rate">
+<code class="descclassname">physics.</code><code class="descname">get_inj_rate</code><span class="sig-paren">(</span><em>injType</em>, <em>injFac</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.get_inj_rate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="data">
+<dt id="physics.h">
+<code class="descclassname">physics.</code><code class="descname">h</code><em class="property"> = 0.6727</em><a class="headerlink" href="#physics.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>h parameter.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.hbar">
+<code class="descclassname">physics.</code><code class="descname">hbar</code><em class="property"> = 6.58211951e-16</em><a class="headerlink" href="#physics.hbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>hbar in eV s.</p>
+</dd></dl>
+
 <dl class="function">
-<dt id="physics.photoionrate">
-<code class="descclassname">physics.</code><code class="descname">photoionrate</code><span class="sig-paren">(</span><em>rs</em>, <em>eng</em>, <em>xH</em>, <em>xe</em>, <em>atom=None</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photoionrate" title="Permalink to this definition">¶</a></dt>
+<dt id="physics.hubble">
+<code class="descclassname">physics.</code><code class="descname">hubble</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omega_m=0.3156</em>, <em>omega_rad=8e-05</em>, <em>omega_lambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.hubble" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="physics.kB">
+<code class="descclassname">physics.</code><code class="descname">kB</code><em class="property"> = 8.6173324e-05</em><a class="headerlink" href="#physics.kB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boltzmann constant in eV/K.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.lya_eng">
+<code class="descclassname">physics.</code><code class="descname">lya_eng</code><em class="property"> = 10.204269397500001</em><a class="headerlink" href="#physics.lya_eng" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lyman alpha transition energy in eV.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.lya_freq">
+<code class="descclassname">physics.</code><code class="descname">lya_freq</code><em class="property"> = 2467381384956776.5</em><a class="headerlink" href="#physics.lya_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lyman alpha transition frequency in Hz.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.me">
+<code class="descclassname">physics.</code><code class="descname">me</code><em class="property"> = 510998.9</em><a class="headerlink" href="#physics.me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electron mass in eV.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.mp">
+<code class="descclassname">physics.</code><code class="descname">mp</code><em class="property"> = 938000000.0</em><a class="headerlink" href="#physics.mp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proton mass in eV.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.nA">
+<code class="descclassname">physics.</code><code class="descname">nA</code><em class="property"> = 2.0308981043443491e-07</em><a class="headerlink" href="#physics.nA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hydrogen and helium number density in cm^-3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.nB">
+<code class="descclassname">physics.</code><code class="descname">nB</code><em class="property"> = 2.499566897654584e-07</em><a class="headerlink" href="#physics.nB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Baryon number density in cm^-3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.nH">
+<code class="descclassname">physics.</code><code class="descname">nH</code><em class="property"> = 1.8746751732409377e-07</em><a class="headerlink" href="#physics.nH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atomic hydrogen number density in cm^-3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.nHe">
+<code class="descclassname">physics.</code><code class="descname">nHe</code><em class="property"> = 1.562229311034115e-08</em><a class="headerlink" href="#physics.nHe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atomic helium number density in cm^-3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.omega_DM">
+<code class="descclassname">physics.</code><code class="descname">omega_DM</code><em class="property"> = 0.2647365852193587</em><a class="headerlink" href="#physics.omega_DM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omega of dark matter today.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.omega_baryon">
+<code class="descclassname">physics.</code><code class="descname">omega_baryon</code><em class="property"> = 0.049168522713946</em><a class="headerlink" href="#physics.omega_baryon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omega of baryons today.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.omega_lambda">
+<code class="descclassname">physics.</code><code class="descname">omega_lambda</code><em class="property"> = 0.6844</em><a class="headerlink" href="#physics.omega_lambda" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omega of dark energy today.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.omega_m">
+<code class="descclassname">physics.</code><code class="descname">omega_m</code><em class="property"> = 0.3156</em><a class="headerlink" href="#physics.omega_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omega of all matter today.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.omega_rad">
+<code class="descclassname">physics.</code><code class="descname">omega_rad</code><em class="property"> = 8e-05</em><a class="headerlink" href="#physics.omega_rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omega of radiation today.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="physics.photo_ion_rate">
+<code class="descclassname">physics.</code><code class="descname">photo_ion_rate</code><span class="sig-paren">(</span><em>rs</em>, <em>eng</em>, <em>xH</em>, <em>xe</em>, <em>atom=None</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photo_ion_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the photoionization rate at a particular redshift, given some ionization history.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -225,14 +369,56 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="physics.photoionxsec">
-<code class="descclassname">physics.</code><code class="descname">photoionxsec</code><span class="sig-paren">(</span><em>eng</em>, <em>species</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photoionxsec" title="Permalink to this definition">¶</a></dt>
+<dt id="physics.photo_ion_xsec">
+<code class="descclassname">physics.</code><code class="descname">photo_ion_xsec</code><span class="sig-paren">(</span><em>eng</em>, <em>species</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photo_ion_xsec" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="data">
+<dt id="physics.rho_DM">
+<code class="descclassname">physics.</code><code class="descname">rho_DM</code><em class="property"> = 1262.3925</em><a class="headerlink" href="#physics.rho_DM" title="Permalink to this definition">¶</a></dt>
+<dd><p>DM density in eV/cm^3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.rho_baryon">
+<code class="descclassname">physics.</code><code class="descname">rho_baryon</code><em class="property"> = 234.45937499999997</em><a class="headerlink" href="#physics.rho_baryon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Baryon density in eV/cm^3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.rho_crit">
+<code class="descclassname">physics.</code><code class="descname">rho_crit</code><em class="property"> = 4768.485243374999</em><a class="headerlink" href="#physics.rho_crit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Critical density of the universe in eV/cm^3.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.rydberg">
+<code class="descclassname">physics.</code><code class="descname">rydberg</code><em class="property"> = 13.60569253</em><a class="headerlink" href="#physics.rydberg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ionization potential of ground state hydrogen.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.stefboltz">
+<code class="descclassname">physics.</code><code class="descname">stefboltz</code><em class="property"> = 6.418149054771152e+23</em><a class="headerlink" href="#physics.stefboltz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stefan-Boltzmann constant in eV^-3 cm^-2 s^2.</p>
+</dd></dl>
+
 <dl class="function">
-<dt id="physics.tausobolev">
-<code class="descclassname">physics.</code><code class="descname">tausobolev</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.tausobolev" title="Permalink to this definition">¶</a></dt>
+<dt id="physics.tau_sobolev">
+<code class="descclassname">physics.</code><code class="descname">tau_sobolev</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.tau_sobolev" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="data">
+<dt id="physics.thomson_xsec">
+<code class="descclassname">physics.</code><code class="descname">thomson_xsec</code><em class="property"> = 6.652458734e-25</em><a class="headerlink" href="#physics.thomson_xsec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thomson cross section in cm^2.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="physics.width_2s1s">
+<code class="descclassname">physics.</code><code class="descname">width_2s1s</code><em class="property"> = 8.23</em><a class="headerlink" href="#physics.width_2s1s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hydrogen 2s to 1s decay width in s^-1.</p>
+</dd></dl>
 
 </div>
 

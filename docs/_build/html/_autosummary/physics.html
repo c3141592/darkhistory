@@ -163,6 +163,159 @@
   <div class="section" id="module-physics">
 <span id="physics"></span><h1>physics<a class="headerlink" href="#module-physics" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">physics</span></code> contains useful physics functions as well as constants.</p>
+<p class="rubric">Constants - Fundamental</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.mp" title="physics.mp"><code class="xref py py-obj docutils literal"><span class="pre">mp</span></code></a></td>
+<td>Proton mass in eV.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.me" title="physics.me"><code class="xref py py-obj docutils literal"><span class="pre">me</span></code></a></td>
+<td>Electron mass in eV.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.hbar" title="physics.hbar"><code class="xref py py-obj docutils literal"><span class="pre">hbar</span></code></a></td>
+<td>hbar in eV s.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.c" title="physics.c"><code class="xref py py-obj docutils literal"><span class="pre">c</span></code></a></td>
+<td>Speed of light in cm/s.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.kB" title="physics.kB"><code class="xref py py-obj docutils literal"><span class="pre">kB</span></code></a></td>
+<td>Boltzmann constant in eV/K.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.alpha" title="physics.alpha"><code class="xref py py-obj docutils literal"><span class="pre">alpha</span></code></a></td>
+<td>Fine structure constant.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.ele" title="physics.ele"><code class="xref py py-obj docutils literal"><span class="pre">ele</span></code></a></td>
+<td>Electron charge in C.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Constants - Atomic and Optical</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.thomson_xsec" title="physics.thomson_xsec"><code class="xref py py-obj docutils literal"><span class="pre">thomson_xsec</span></code></a></td>
+<td>Thomson cross section in cm^2.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.stefboltz" title="physics.stefboltz"><code class="xref py py-obj docutils literal"><span class="pre">stefboltz</span></code></a></td>
+<td>Stefan-Boltzmann constant in eV^-3 cm^-2 s^2.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.rydberg" title="physics.rydberg"><code class="xref py py-obj docutils literal"><span class="pre">rydberg</span></code></a></td>
+<td>Ionization potential of ground state hydrogen.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.lya_eng" title="physics.lya_eng"><code class="xref py py-obj docutils literal"><span class="pre">lya_eng</span></code></a></td>
+<td>Lyman alpha transition energy in eV.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.lya_freq" title="physics.lya_freq"><code class="xref py py-obj docutils literal"><span class="pre">lya_freq</span></code></a></td>
+<td>Lyman alpha transition frequency in Hz.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.width_2s1s" title="physics.width_2s1s"><code class="xref py py-obj docutils literal"><span class="pre">width_2s1s</span></code></a></td>
+<td>Hydrogen 2s to 1s decay width in s^-1.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.bohr_rad" title="physics.bohr_rad"><code class="xref py py-obj docutils literal"><span class="pre">bohr_rad</span></code></a></td>
+<td>Bohr radius in cm.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.ele_rad" title="physics.ele_rad"><code class="xref py py-obj docutils literal"><span class="pre">ele_rad</span></code></a></td>
+<td>Classical electron radius in cm.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.ele_compton" title="physics.ele_compton"><code class="xref py py-obj docutils literal"><span class="pre">ele_compton</span></code></a></td>
+<td>Electron Compton wavelength in cm.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Constants - Cosmology</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.h" title="physics.h"><code class="xref py py-obj docutils literal"><span class="pre">h</span></code></a></td>
+<td>h parameter.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.H0" title="physics.H0"><code class="xref py py-obj docutils literal"><span class="pre">H0</span></code></a></td>
+<td>Hubble parameter today in s^-1.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.omega_m" title="physics.omega_m"><code class="xref py py-obj docutils literal"><span class="pre">omega_m</span></code></a></td>
+<td>Omega of all matter today.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.omega_rad" title="physics.omega_rad"><code class="xref py py-obj docutils literal"><span class="pre">omega_rad</span></code></a></td>
+<td>Omega of radiation today.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.omega_lambda" title="physics.omega_lambda"><code class="xref py py-obj docutils literal"><span class="pre">omega_lambda</span></code></a></td>
+<td>Omega of dark energy today.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.omega_baryon" title="physics.omega_baryon"><code class="xref py py-obj docutils literal"><span class="pre">omega_baryon</span></code></a></td>
+<td>Omega of baryons today.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.omega_DM" title="physics.omega_DM"><code class="xref py py-obj docutils literal"><span class="pre">omega_DM</span></code></a></td>
+<td>Omega of dark matter today.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.rho_crit" title="physics.rho_crit"><code class="xref py py-obj docutils literal"><span class="pre">rho_crit</span></code></a></td>
+<td>Critical density of the universe in eV/cm^3.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.rho_DM" title="physics.rho_DM"><code class="xref py py-obj docutils literal"><span class="pre">rho_DM</span></code></a></td>
+<td>DM density in eV/cm^3.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.rho_baryon" title="physics.rho_baryon"><code class="xref py py-obj docutils literal"><span class="pre">rho_baryon</span></code></a></td>
+<td>Baryon density in eV/cm^3.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.nB" title="physics.nB"><code class="xref py py-obj docutils literal"><span class="pre">nB</span></code></a></td>
+<td>Baryon number density in cm^-3.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.YHe" title="physics.YHe"><code class="xref py py-obj docutils literal"><span class="pre">YHe</span></code></a></td>
+<td>Helium abundance by mass.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.nH" title="physics.nH"><code class="xref py py-obj docutils literal"><span class="pre">nH</span></code></a></td>
+<td>Atomic hydrogen number density in cm^-3.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.nHe" title="physics.nHe"><code class="xref py py-obj docutils literal"><span class="pre">nHe</span></code></a></td>
+<td>Atomic helium number density in cm^-3.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.nA" title="physics.nA"><code class="xref py py-obj docutils literal"><span class="pre">nA</span></code></a></td>
+<td>Hydrogen and helium number density in cm^-3.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.hubble" title="physics.hubble"><code class="xref py py-obj docutils literal"><span class="pre">hubble</span></code></a>(rs[,&nbsp;H0,&nbsp;omega_m,&nbsp;omega_rad,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.dtdz" title="physics.dtdz"><code class="xref py py-obj docutils literal"><span class="pre">dtdz</span></code></a>(rs[,&nbsp;H0,&nbsp;omega_m,&nbsp;omega_rad,&nbsp;omega_lambda])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.TCMB" title="physics.TCMB"><code class="xref py py-obj docutils literal"><span class="pre">TCMB</span></code></a>(rs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.get_inj_rate" title="physics.get_inj_rate"><code class="xref py py-obj docutils literal"><span class="pre">get_inj_rate</span></code></a>(injType,&nbsp;injFac)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.photo_ion_rate" title="physics.photo_ion_rate"><code class="xref py py-obj docutils literal"><span class="pre">photo_ion_rate</span></code></a>(rs,&nbsp;eng,&nbsp;xH,&nbsp;xe[,&nbsp;atom])</td>
+<td>Returns the photoionization rate at a particular redshift, given some ionization history.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.photo_ion_xsec" title="physics.photo_ion_xsec"><code class="xref py py-obj docutils literal"><span class="pre">photo_ion_xsec</span></code></a>(eng,&nbsp;species)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../physics.html#physics.tau_sobolev" title="physics.tau_sobolev"><code class="xref py py-obj docutils literal"><span class="pre">tau_sobolev</span></code></a>(rs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../physics.html#physics.CMB_spec" title="physics.CMB_spec"><code class="xref py py-obj docutils literal"><span class="pre">CMB_spec</span></code></a>(temp,&nbsp;eng)</td>
+<td>Returns the CMB spectrum in number of photons/cm^3/eV, for a given temperature and energy of the photon.</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
