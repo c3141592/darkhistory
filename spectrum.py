@@ -5,6 +5,8 @@ import utilities as utils
 import matplotlib.pyplot as plt
 import time
 
+from scipy import integrate
+
 class LogBinError(Exception):
     """Exception when something is not log-binned. """
     pass
@@ -594,10 +596,10 @@ def discretize(func, eng):
     bin_width = np.diff(bin_boundary)
     N = np.zeros(eng.size)
     
-    for i, low, upp in zip(bin_boundary[:-1], bin_boundary[1:], 
+    for low, upp, i in zip(bin_boundary[:-1], bin_boundary[1:], 
         np.arange(bin_width.size)):
     # Perform an integral over the spectrum for each bin.
-        N[i] = np.quad(func, low, upp)
+        N[i] = integrate.quad(func, low, upp)[0]
 
     return Spectrum(eng, N/bin_width)
 

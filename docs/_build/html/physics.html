@@ -155,22 +155,23 @@
 <p><code class="docutils literal"><span class="pre">physics</span></code> contains useful physics functions as well as constants.</p>
 <dl class="function">
 <dt id="physics.CMB_spec">
-<code class="descclassname">physics.</code><code class="descname">CMB_spec</code><span class="sig-paren">(</span><em>temp</em>, <em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.CMB_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the CMB spectrum in number of photons/cm^3/eV, for a given temperature and energy of the photon.</p>
+<code class="descclassname">physics.</code><code class="descname">CMB_spec</code><span class="sig-paren">(</span><em>eng</em>, <em>temp</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.CMB_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the CMB spectrum in number of photons/cm^3/eV.</p>
+<p>Returns zero if the energy exceeds 500 times the temperature.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>temp</strong> (<em>float</em>) – Temperature of the CMB in eV.</li>
-<li><strong>eng</strong> (<em>float</em>) – Energy of the photon in eV.</li>
+<li><strong>eng</strong> (<em>float</em><em> or </em><em>ndarray</em>) – Energy of the photon in eV.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>photSpecDensity</strong> – Returns the number of photons/cm^3/eV.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>phot_spec_density</strong> – Returns the number of photons/cm^3/eV.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
 </td>
 </tr>
 </tbody>
@@ -186,7 +187,20 @@
 <dl class="function">
 <dt id="physics.TCMB">
 <code class="descclassname">physics.</code><code class="descname">TCMB</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.TCMB" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the CMB temperature at a given redshift in eV.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rs</strong> (<em>float</em>) – Redshift (1+z).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.YHe">
@@ -215,7 +229,30 @@
 <dl class="function">
 <dt id="physics.dtdz">
 <code class="descclassname">physics.</code><code class="descname">dtdz</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omega_m=0.3156</em>, <em>omega_rad=8e-05</em>, <em>omega_lambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.dtdz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns dt/dz at a given redshift.</p>
+<p>Assumes a flat universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rs</strong> (<em>float</em>) – The redshift of interest.</li>
+<li><strong>H0</strong> (<em>float</em>) – The Hubble parameter today, default value <cite>H0</cite>.</li>
+<li><strong>omega_m</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega matter today, default value <cite>omega_m</cite>.</li>
+<li><strong>omega_rad</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega radiation today, default value <cite>omega_rad</cite>.</li>
+<li><strong>omega_lambda</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega dark energy today, default value <cite>omega_lambda</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.ele">
@@ -237,8 +274,27 @@
 
 <dl class="function">
 <dt id="physics.get_inj_rate">
-<code class="descclassname">physics.</code><code class="descname">get_inj_rate</code><span class="sig-paren">(</span><em>injType</em>, <em>injFac</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.get_inj_rate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">physics.</code><code class="descname">get_inj_rate</code><span class="sig-paren">(</span><em>inj_type</em>, <em>inj_fac</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.get_inj_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the injection rate function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inj_type</strong> (<em>{'sWave'</em><em>, </em><em>'decay'}</em>) – The type of injection.</li>
+<li><strong>inj_fac</strong> (<em>float</em>) – The prefactor for the injection rate, consisting of everything other than the redshift dependence.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function takes redshift as an input, and outputs the injection rate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">function</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.h">
@@ -255,7 +311,30 @@
 <dl class="function">
 <dt id="physics.hubble">
 <code class="descclassname">physics.</code><code class="descname">hubble</code><span class="sig-paren">(</span><em>rs</em>, <em>H0=2.1802207e-18</em>, <em>omega_m=0.3156</em>, <em>omega_rad=8e-05</em>, <em>omega_lambda=0.6844</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.hubble" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the Hubble parameter at a given redshift.</p>
+<p>Assumes a flat universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rs</strong> (<em>float</em>) – The redshift of interest.</li>
+<li><strong>H0</strong> (<em>float</em>) – The Hubble parameter today, default value <cite>H0</cite>.</li>
+<li><strong>omega_m</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega matter today, default value <cite>omega_m</cite>.</li>
+<li><strong>omega_rad</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega radiation today, default value <cite>omega_rad</cite>.</li>
+<li><strong>omega_lambda</strong> (<em>float</em><em>, </em><em>optional</em>) – Omega dark energy today, default value <cite>omega_lambda</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.kB">
@@ -344,24 +423,24 @@
 <dl class="function">
 <dt id="physics.photo_ion_rate">
 <code class="descclassname">physics.</code><code class="descname">photo_ion_rate</code><span class="sig-paren">(</span><em>rs</em>, <em>eng</em>, <em>xH</em>, <em>xe</em>, <em>atom=None</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photo_ion_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the photoionization rate at a particular redshift, given some ionization history.</p>
+<dd><p>Returns the photoionization rate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>rs</strong> (<em>float</em>) – Redshift at which the photoionization rate is to be obtained.</li>
-<li><strong>eng</strong> (<em>ndarray</em>) – Energies at which the photoionization rate is to be obtained.</li>
+<li><strong>rs</strong> (<em>float</em>) – Redshift (1+z).</li>
+<li><strong>eng</strong> (<em>ndarray</em>) – Energies to evaluate the cross section.</li>
 <li><strong>xH</strong> (<em>float</em>) – Ionization fraction n_H+/n_H.</li>
 <li><strong>xe</strong> (<em>float</em>) – Ionization fraction n_e/n_H = n_H+/n_H + n_He+/n_H.</li>
-<li><strong>atom</strong> (<em>str</em><em>, </em><em>optional</em>) – A string that must be one of <code class="docutils literal"><span class="pre">'H0'</span></code>, <code class="docutils literal"><span class="pre">'He0'</span></code> or <code class="docutils literal"><span class="pre">'He1'</span></code>. Determines which photoionization rate is returned. The default value is <code class="docutils literal"><span class="pre">None</span></code>, which returns all of the rates in a dict.</li>
+<li><strong>atom</strong> (<em>{None</em><em>,</em><em>'H0'</em><em>,</em><em>'He0'</em><em>,</em><em>'He1'}</em><em>, </em><em>optional</em>) – Determines which photoionization rate is returned. The default value is <code class="docutils literal"><span class="pre">None</span></code>, which returns all of the rates.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ionrate</strong> – Returns a dictionary with keys <code class="docutils literal"><span class="pre">'H0'</span></code>, <code class="docutils literal"><span class="pre">'He0'</span></code> and <code class="docutils literal"><span class="pre">'He1'</span></code>, each with an ndarray of the same length as <cite>eng</cite>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ionrate</strong> – The ionization rate of the particular species or the total ionization rate.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
@@ -371,7 +450,27 @@
 <dl class="function">
 <dt id="physics.photo_ion_xsec">
 <code class="descclassname">physics.</code><code class="descname">photo_ion_xsec</code><span class="sig-paren">(</span><em>eng</em>, <em>species</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.photo_ion_xsec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the photoionization cross section.</p>
+<p>Cross sections for hydrogen, neutral helium and singly-ionized helium are available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>eng</strong> (<em>ndarray</em>) – Energy to evaluate the cross section at.</li>
+<li><strong>species</strong> (<em>{'H0'</em><em>, </em><em>'He0'</em><em>, </em><em>'He1'}</em>) – Species of interest.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>xsec</strong> – Cross section in cm^2.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.rho_DM">
@@ -406,7 +505,20 @@
 <dl class="function">
 <dt id="physics.tau_sobolev">
 <code class="descclassname">physics.</code><code class="descname">tau_sobolev</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="headerlink" href="#physics.tau_sobolev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the Sobolev optical depth.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rs</strong> (<em>float</em>) – Redshift (1+z).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="data">
 <dt id="physics.thomson_xsec">
