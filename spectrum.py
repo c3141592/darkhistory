@@ -723,7 +723,7 @@ def get_bin_bound(eng):
 def discretize(func, eng):
     """Discretizes a continuous function. 
 
-    The function is integrated between the bin boundaries specified by `eng` to obtain the discretized spectrum, so that the spectrum value times the bin width agrees with the integral.
+    The function is integrated between the bin boundaries specified by `eng` to obtain the discretized spectrum, so that the dN/dE spectrum value times the E d(log E) agrees with the integral.
 
     Parameters
     ----------
