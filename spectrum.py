@@ -666,7 +666,7 @@ class Spectrum:
             The new redshift (1+z) to redshift to.
 
         """
-        
+
         fac = new_rs/self.rs
         
         eng_orig = self.eng
@@ -738,7 +738,7 @@ def discretize(func, eng):
         The discretized spectrum. rs is set to -1, and must be set manually. 
     """
     bin_boundary = get_bin_bound(eng)
-    bin_width = np.diff(bin_boundary)
+    log_bin_width = np.diff(np.log(bin_boundary))
     N = np.zeros(eng.size)
     
     for low, upp, i in zip(bin_boundary[:-1], bin_boundary[1:], 
@@ -746,7 +746,7 @@ def discretize(func, eng):
     # Perform an integral over the spectrum for each bin.
         N[i] = integrate.quad(func, low, upp)[0]
 
-    return Spectrum(eng, N/bin_width)
+    return Spectrum(eng, N/(eng*log_bin_width))
 
 
 
