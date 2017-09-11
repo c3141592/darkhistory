@@ -173,7 +173,7 @@ class Spectrum:
         -----
         This special function, together with `Spectrum.__rsub__`, allows the use of the symbol - to subtract or subtract from `Spectrum` objects.
 
-        The returned `Spectrum` object nderflow is reset to zero if `other` is not a `Spectrum` object.
+        The returned `Spectrum` object underflow is reset to zero if `other` is not a `Spectrum` object.
 
         See Also
         --------
@@ -360,11 +360,7 @@ class Spectrum:
         Parameters
         ----------
         bound_type : {'bin', 'eng', None}
-            The type of bounds to use. Bound values do not have to be within the [0:length] for `'bin'` or within the abscissa for `'eng'`. `None` should only be used when computing the total particle number in the spectrum.
-
-            `'bin'` : bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram. 
-            
-            `'eng'` : bounds are specified by energy values.
+            The type of bounds to use. Bound values do not have to be within the [0:length] for `'bin'` or within the abscissa for `'eng'`. `None` should only be used when computing the total particle number in the spectrum. For `'bin'`, bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram. For `'eng'`, bounds are specified by energy values.
 
         bound_arr : ndarray, optional
             An array of boundaries (bin or energy), between which the total number of particles will be computed. If unspecified, the total number of particles in the whole spectrum is computed.
@@ -445,11 +441,7 @@ class Spectrum:
         Parameters
         ----------
         bound_type : {'bin', 'eng', None}
-            The type of bounds to use. Bound values do not have to be within the [0:length] for `'bin'` or within the abscissa for `'eng'`. `None` should only be used to obtain the total energy. 
-
-            With `'bin'`, bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram. 
-            
-            With `'eng'`, bounds are specified by energy values. 
+            The type of bounds to use. Bound values do not have to be within the [0:length] for `'bin'` or within the abscissa for `'eng'`. `None` should only be used to obtain the total energy. With `'bin'`, bounds are specified as the bin boundary, with 0 being the left most boundary, 1 the right-hand of the first bin and so on. This is equivalent to integrating over a histogram. With `'eng'`, bounds are specified by energy values. 
 
         bound_arr : ndarray, optional
             An array of boundaries (bin or energy), between which the total number of particles will be computed. If unspecified, the total number of particles in the whole spectrum is computed.
@@ -527,7 +519,7 @@ class Spectrum:
                 + self.underflow['eng'])
 
     def rebin(self, out_eng):
-        """ Re-bins the Spectrum object according to a new abscissa.
+        """ Re-bins the ``Spectrum`` object according to a new abscissa.
 
         Rebinning conserves total number and total energy.
         
@@ -548,7 +540,7 @@ class Spectrum:
 
         If a bin in `self.eng` is below the lowest bin in `out_eng`, then the total number and energy not assigned to the lowest bin are assigned to the underflow. Particles will only be assigned to the lowest bin if there is some overlap between the bin index with respect to `out_eng` bin centers is larger than -1.0.
 
-        If a bin in `self.eng` is above the highest bin in `out_eng`, then the total number and energy are assigned to the two highest bins according to the same formula as in the regular case. 
+        If a bin in `self.eng` is above the highest bin in `out_eng`, then an `OverflowError` is thrown. 
 
         """
         if not all(np.diff(out_eng) > 0):
@@ -666,14 +658,15 @@ class Spectrum:
         self.underflow['eng'] = eng_underflow 
 
     def redshift(self, new_rs):
-        """Redshifts the Spectrum object as a photon spectrum. 
+        """Redshifts the ``Spectrum`` object as a photon spectrum. 
 
         Parameters
         ----------
         new_rs : float
             The new redshift (1+z) to redshift to.
+
         """
-        if new_rs > self.rs: warnings.warn("Attempting to blueshift spectrum.")
+        
         fac = new_rs/self.rs
         
         eng_orig = self.eng
