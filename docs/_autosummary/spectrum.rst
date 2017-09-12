@@ -7,8 +7,9 @@ spectrum
 
    .. autosummary:: 
    
-      get_bin_bound
       discretize
+      get_bin_bound
+      rebin_N_arr
    
    
 

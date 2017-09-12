@@ -165,7 +165,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>func_dNdE</strong> (<em>function</em>) – A single variable function that takes in energy as an input, and then returns a dN/dE spectrum value.</li>
-<li><strong>eng</strong> (<em>ndarray</em>) – The new abscissa after discretization.</li>
+<li><strong>eng</strong> (<em>ndarray</em>) – Both the bin boundaries to integrate between and the new abscissa after discretization (bin centers).</li>
 </ul>
 </td>
 </tr>
@@ -177,6 +177,7 @@
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
 </dd></dl>
 
 <dl class="function">
@@ -209,7 +210,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>N_arr</strong> (<em>ndarray</em>) – An array of number of particles in each bin.</li>
-<li><strong>in_eng</strong> (<em>ndarray</em>) – An array of the energy abscissa for each bin. The total energy in each bin <cite>i</cite> should be <cite>N_arr[i]*in_eng[i]</cite>.</li>
+<li><strong>in_eng</strong> (<em>ndarray</em>) – An array of the energy abscissa for each bin. The total energy in each bin <cite>i should be `N_arr[i]*in_eng[i]</cite>.</li>
 <li><strong>out_eng</strong> (<em>ndarray</em>) – The new abscissa to bin into. If <cite>in_eng</cite> has values that are smaller than</li>
 </ul>
 </td>
@@ -324,7 +325,7 @@
 <p>The returned <cite>Spectrum</cite> object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a <cite>Spectrum</cite> object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__radd__" title="spectrum.Spectrum.__radd__"><code class="xref py py-meth docutils literal"><span class="pre">__radd__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__radd__" title="spectrum.Spectrum.__radd__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__radd__()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -349,7 +350,7 @@
 <p>The returned <cite>Spectrum</cite> object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a <cite>Spectrum</cite> object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rmul__" title="spectrum.Spectrum.__rmul__"><code class="xref py py-meth docutils literal"><span class="pre">__rmul__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rmul__" title="spectrum.Spectrum.__rmul__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__rmul__()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -390,7 +391,7 @@
 <p>The returned <cite>Spectrum</cite> object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a <cite>Spectrum</cite> object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__add__" title="spectrum.Spectrum.__add__"><code class="xref py py-meth docutils literal"><span class="pre">__add__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__add__" title="spectrum.Spectrum.__add__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__add__()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -415,7 +416,7 @@
 <p>The returned <cite>Spectrum</cite> object <cite>underflow</cite> is reset to zero if <cite>other</cite> is not a <cite>Spectrum</cite> object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__mul__" title="spectrum.Spectrum.__mul__"><code class="xref py py-meth docutils literal"><span class="pre">__mul__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__mul__" title="spectrum.Spectrum.__mul__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__mul__()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -439,7 +440,7 @@
 <p>This special function, together with <cite>Spectrum.__sub__</cite>, allows the use of the symbol - to subtract or subtract from <cite>Spectrum</cite> objects.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__sub__" title="spectrum.Spectrum.__sub__"><code class="xref py py-meth docutils literal"><span class="pre">__sub__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__sub__" title="spectrum.Spectrum.__sub__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__sub__()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -485,7 +486,7 @@
 <p>The returned <cite>Spectrum</cite> object underflow is reset to zero if <cite>other</cite> is not a <cite>Spectrum</cite> object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rsub__" title="spectrum.Spectrum.__rsub__"><code class="xref py py-meth docutils literal"><span class="pre">__rsub__()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.__rsub__" title="spectrum.Spectrum.__rsub__"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.Spectrum.__rsub__()</span></code></a></p>
 </div>
 </dd></dl>
 
