@@ -4,8 +4,10 @@ spectrum module
     
     .. rubric:: Methods
 
-    .. autofunction:: get_bin_bound
     .. autofunction:: discretize
+    .. autofunction:: get_bin_bound
+    .. autofunction:: rebin_N_arr
+    
 
     .. rubric:: Classes
 

@@ -155,6 +155,31 @@
 <p><code class="docutils literal"><span class="pre">spectrum</span></code> contains functions and classes for processing spectral data.</p>
 <p class="rubric">Methods</p>
 <dl class="function">
+<dt id="spectrum.discretize">
+<code class="descclassname">spectrum.</code><code class="descname">discretize</code><span class="sig-paren">(</span><em>func_dNdE</em>, <em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.discretize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discretizes a continuous function.</p>
+<p>The function is integrated between the bin boundaries specified by <cite>eng</cite> to obtain the discretized spectrum, so that the final spectrum conserves number and energy between the bin <strong>boundaries</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func_dNdE</strong> (<em>function</em>) – A single variable function that takes in energy as an input, and then returns a dN/dE spectrum value.</li>
+<li><strong>eng</strong> (<em>ndarray</em>) – The new abscissa after discretization.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The discretized spectrum. rs is set to -1, and must be set manually.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="spectrum.get_bin_bound">
 <code class="descclassname">spectrum.</code><code class="descname">get_bin_bound</code><span class="sig-paren">(</span><em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.get_bin_bound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bin boundary of an abscissa.</p>
@@ -174,28 +199,42 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="spectrum.discretize">
-<code class="descclassname">spectrum.</code><code class="descname">discretize</code><span class="sig-paren">(</span><em>func</em>, <em>eng</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.discretize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Discretizes a continuous function.</p>
-<p>The function is integrated between the bin boundaries specified by <cite>eng</cite> to obtain the discretized spectrum, so that the spectrum value times the bin width agrees with the integral.</p>
+<dt id="spectrum.rebin_N_arr">
+<code class="descclassname">spectrum.</code><code class="descname">rebin_N_arr</code><span class="sig-paren">(</span><em>N_arr</em>, <em>in_eng</em>, <em>out_eng</em><span class="sig-paren">)</span><a class="headerlink" href="#spectrum.rebin_N_arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebins an array of particle number with fixed energy.</p>
+<p>Returns a <code class="docutils literal"><span class="pre">Spectrum</span></code> object. The rebinning conserves both total number and total energy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<em>function</em>) – A single variable function that takes in energy as an input, and then returns a dN/dE spectrum value.</li>
-<li><strong>eng</strong> (<em>ndarray</em>) – The new abscissa after discretization.</li>
+<li><strong>N_arr</strong> (<em>ndarray</em>) – An array of number of particles in each bin.</li>
+<li><strong>in_eng</strong> (<em>ndarray</em>) – An array of the energy abscissa for each bin. The total energy in each bin <cite>i</cite> should be <cite>N_arr[i]*in_eng[i]</cite>.</li>
+<li><strong>out_eng</strong> (<em>ndarray</em>) – The new abscissa to bin into. If <cite>in_eng</cite> has values that are smaller than</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The discretized spectrum. rs is set to -1, and must be set manually.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The output <code class="docutils literal"><span class="pre">Spectrum</span></code> with appropriate dN/dE, with abscissa out_eng.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#spectrum.Spectrum" title="spectrum.Spectrum">Spectrum</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">OverflowError</span></code> – The maximum energy in <cite>out_eng</cite> cannot be smaller than any bin in <cite>self.eng</cite>.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low &lt; eng &lt; eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/(E * dlogE_low)), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/(E*dlogE_upp)).</p>
+<p>If a bin in <cite>in_eng</cite> is below the lowest bin in <cite>out_eng</cite>, then the total number and energy not assigned to the lowest bin are assigned to the underflow. Particles will only be assigned to the lowest bin if there is some overlap between the bin index with respect to <cite>out_eng</cite> bin centers is larger than -1.0.</p>
+<p class="last">If a bin in <cite>in_eng</cite> is above the highest bin in <cite>out_eng</cite>, then an <cite>OverflowError</cite> is thrown.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#spectrum.Spectrum.rebin" title="spectrum.Spectrum.rebin"><code class="xref py py-func docutils literal"><span class="pre">spectrum.Spectrum.rebin()</span></code></a></p>
+</div>
 </dd></dl>
 
 <p class="rubric">Classes</p>
@@ -506,9 +545,13 @@
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low &lt; eng &lt; eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/dE_low), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/dE_upp).</p>
+<p>The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low &lt; eng &lt; eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/(E * dlogE_low)), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/(E*dlogE_upp)).</p>
 <p>If a bin in <cite>self.eng</cite> is below the lowest bin in <cite>out_eng</cite>, then the total number and energy not assigned to the lowest bin are assigned to the underflow. Particles will only be assigned to the lowest bin if there is some overlap between the bin index with respect to <cite>out_eng</cite> bin centers is larger than -1.0.</p>
 <p class="last">If a bin in <cite>self.eng</cite> is above the highest bin in <cite>out_eng</cite>, then an <cite>OverflowError</cite> is thrown.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#spectrum.rebin_N_arr" title="spectrum.rebin_N_arr"><code class="xref py py-meth docutils literal"><span class="pre">spectrum.rebin_N_arr()</span></code></a></p>
 </div>
 </dd></dl>
 

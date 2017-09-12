@@ -536,14 +536,18 @@ class Spectrum:
         
         Note
         ----
-        The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low < eng < eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/dE_low), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/dE_upp).
+        The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low < eng < eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/(E * dlogE_low)), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/(E*dlogE_upp)).
 
         If a bin in `self.eng` is below the lowest bin in `out_eng`, then the total number and energy not assigned to the lowest bin are assigned to the underflow. Particles will only be assigned to the lowest bin if there is some overlap between the bin index with respect to `out_eng` bin centers is larger than -1.0.
 
         If a bin in `self.eng` is above the highest bin in `out_eng`, then an `OverflowError` is thrown. 
 
+        See Also
+        --------
+        spectrum.rebin_N_arr
+
         """
-        if not all(np.diff(out_eng) > 0):
+        if not np.all(np.diff(out_eng) > 0):
             raise TypeError("new abscissa must be ordered in increasing energy.")
         if out_eng[-1] < self.eng[-1]:
             raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
@@ -558,12 +562,12 @@ class Spectrum:
 
         # Find the relative bin indices for self.eng wrt new_eng. The first bin in new_eng has bin index -1. 
         bin_ind = np.interp(self.eng, new_eng, 
-            np.arange(new_eng.size)-1, left = -2, right = self.length)
+            np.arange(new_eng.size)-1, left = -2, right = new_eng.size)
 
         # Locate where bin_ind is below 0, above self.length-1 and in between.
         ind_low = np.where(bin_ind < 0)
-        ind_high = np.where(bin_ind == self.length)
-        ind_reg = np.where( (bin_ind >= 0) & (bin_ind <= self.length - 1) )
+        ind_high = np.where(bin_ind == new_eng.size)
+        ind_reg = np.where( (bin_ind >= 0) & (bin_ind <= new_eng.size - 1) )
 
         if ind_high[0].size > 0: 
             raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
@@ -577,9 +581,9 @@ class Spectrum:
         # filter_reg = np.where( (bin_ind >= 0) | (bin_ind <= self.length-1), 
         #     np.ones(self.length),np.zeros(self.length))
 
-        # Get the total N and eng in each bin of self.dNdE
+        # Get the total N and toteng in each bin of self.dNdE
         N_arr = self.totN('bin', np.arange(self.length + 1))
-        eng_arr = self.toteng('bin', np.arange(self.length + 1))
+        toteng_arr = self.toteng('bin', np.arange(self.length + 1))
 
         # N_arr_low = N_arr * filter_low
         # N_arr_high = N_arr * filter_high
@@ -589,7 +593,7 @@ class Spectrum:
         N_arr_high = N_arr[ind_high]
         N_arr_reg = N_arr[ind_reg]
 
-        eng_arr_low = eng_arr[ind_low]
+        toteng_arr_low = toteng_arr[ind_low]
 
         # Bin width of the new array. Use only the log bin width, so that dN/dE = N/(E d log E)
         new_E_dlogE = new_eng * np.diff(np.log(get_bin_bound(new_eng)))
@@ -617,9 +621,7 @@ class Spectrum:
         eng_above_underflow = N_above_underflow * new_eng[1]
 
         N_underflow = np.sum(N_arr_low) - N_above_underflow
-        eng_underflow = np.sum(eng_arr_low) - eng_above_underflow
-        print("N_above_underflow", N_above_underflow)
-        print("eng_above_underflow", eng_above_underflow)
+        eng_underflow = np.sum(toteng_arr_low) - eng_above_underflow
         low_dNdE = N_above_underflow/new_E_dlogE[1]
 
 
@@ -633,7 +635,7 @@ class Spectrum:
         # print("new_eng: ", new_eng)
         # print("bin_ind[ind_low]", bin_ind[ind_low])
         # print("N_arr_low: ", N_arr_low)
-        # print("eng_arr_low: ", eng_arr_low)
+        # print("toteng_arr_low: ", toteng_arr_low)
         # print("high_dNdE_low: ", high_dNdE_low)
         # print("high_dNdE_upp: ", high_dNdE_upp)
         # print("low_dNdE: ", low_dNdE)
@@ -654,8 +656,8 @@ class Spectrum:
         self.bin_boundary = get_bin_bound(self.eng)
         self.log_bin_width = np.diff(np.log(self.bin_boundary))
 
-        self.underflow['N'] = N_underflow
-        self.underflow['eng'] = eng_underflow 
+        self.underflow['N'] += N_underflow
+        self.underflow['eng'] += eng_underflow 
 
     def redshift(self, new_rs):
         """Redshifts the ``Spectrum`` object as a photon spectrum. 
@@ -673,6 +675,7 @@ class Spectrum:
 
         self.eng = self.eng*fac
         self.dNdE = self.dNdE/fac
+        self.underflow['eng'] *= fac
         self.length = self.eng.size 
         self.bin_boundary = get_bin_bound(self.eng)
         self.log_bin_width = np.diff(np.log(self.bin_boundary))
@@ -720,14 +723,129 @@ def get_bin_bound(eng):
 
     return bin_boundary
 
-def discretize(func, eng):
-    """Discretizes a continuous function. 
-
-    The function is integrated between the bin boundaries specified by `eng` to obtain the discretized spectrum, so that the dN/dE spectrum value times the E d(log E) agrees with the integral.
+def rebin_N_arr(N_arr, in_eng, out_eng):
+    """Rebins an array of particle number with fixed energy.
+    
+    Returns a ``Spectrum`` object. The rebinning conserves both total number and total energy.
 
     Parameters
     ----------
-    func : function
+    N_arr : ndarray
+        An array of number of particles in each bin. 
+    in_eng : ndarray
+        An array of the energy abscissa for each bin. The total energy in each bin `i should be `N_arr[i]*in_eng[i]`.
+    out_eng : ndarray
+        The new abscissa to bin into. If `in_eng` has values that are smaller than 
+
+    Returns
+    -------
+    Spectrum
+        The output ``Spectrum`` with appropriate dN/dE, with abscissa out_eng.
+
+    Raises
+    ------
+    OverflowError
+        The maximum energy in `out_eng` cannot be smaller than any bin in `self.eng`.
+
+    Note
+    ----
+    The total number and total energy is conserved by assigning the number of particles N in a bin of energy eng to two adjacent bins in new_eng, with energies eng_low and eng_upp such that eng_low < eng < eng_upp. Then dN_low_dE_low = (eng_upp - eng)/(eng_upp - eng_low)*(N/(E * dlogE_low)), and dN_upp_dE_upp = (eng - eng_low)/(eng_upp - eng_low)*(N/(E*dlogE_upp)).
+
+    If a bin in `in_eng` is below the lowest bin in `out_eng`, then the total number and energy not assigned to the lowest bin are assigned to the underflow. Particles will only be assigned to the lowest bin if there is some overlap between the bin index with respect to `out_eng` bin centers is larger than -1.0.
+
+    If a bin in `in_eng` is above the highest bin in `out_eng`, then an `OverflowError` is thrown. 
+
+    See Also
+    --------
+    spectrum.Spectrum.rebin
+    """
+    if N_arr.size is not in_eng.size:
+        raise TypeError("The array for number of particles has a different length from the abscissa.")
+
+    if not np.all(np.diff(out_eng) > 0):
+        raise TypeError("new abscissa must be ordered in increasing energy.")
+    if out_eng[-1] < in_eng[-1]:
+        raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
+    # Get the bin indices that the current abscissa (self.eng) corresponds to in the new abscissa (new_eng). Can be any number between 0 and self.length-1. Bin indices are wrt the bin centers.
+
+    # Add an additional bin at the lower end of out_eng so that underflow can be treated easily.
+
+    first_bin_eng = np.exp(np.log(out_eng[0]) - (np.log(out_eng[1]) - np.log(out_eng[0])))
+    new_eng = np.insert(out_eng, 0, first_bin_eng)
+
+    # Find the relative bin indices for self.eng wrt new_eng. The first bin in new_eng has bin index -1. 
+    bin_ind = np.interp(in_eng, new_eng, 
+        np.arange(new_eng.size)-1, left = -2, right = new_eng.size)
+
+    # Locate where bin_ind is below 0, above self.length-1 and in between.
+    ind_low = np.where(bin_ind < 0)
+    ind_high = np.where(bin_ind == new_eng.size)
+    ind_reg = np.where( (bin_ind >= 0) & (bin_ind <= new_eng.size - 1) )
+
+    if ind_high[0].size > 0: 
+        raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
+
+    # Get the total N and toteng in each bin
+    toteng_arr = N_arr*in_eng
+
+    N_arr_low = N_arr[ind_low]
+    N_arr_high = N_arr[ind_high]
+    N_arr_reg = N_arr[ind_reg]
+
+    toteng_arr_low = toteng_arr[ind_low]
+
+    # Bin width of the new array. Use only the log bin width, so that dN/dE = N/(E d log E)
+    new_E_dlogE = new_eng * np.diff(np.log(get_bin_bound(new_eng)))
+
+    # Regular bins first, done in a completely vectorized fashion. 
+
+    # reg_bin_low is the array of the lower bins to be allocated the particles in N_arr_reg, similarly reg_bin_upp. This should also take care of the fact that bin_ind is an integer.
+    reg_bin_low = np.floor(bin_ind[ind_reg]).astype(int)
+    reg_bin_upp = reg_bin_low + 1
+
+    reg_N_low = (reg_bin_upp - bin_ind[ind_reg]) * N_arr_reg
+    reg_N_upp = (bin_ind[ind_reg] - reg_bin_low) * N_arr_reg
+
+    reg_dNdE_low = ((reg_bin_upp - bin_ind[ind_reg]) * N_arr_reg
+                   /new_E_dlogE[reg_bin_low+1])
+    reg_dNdE_upp = ((bin_ind[ind_reg] - reg_bin_low) * N_arr_reg
+                   /new_E_dlogE[reg_bin_upp+1])
+
+    # Low bins. 
+    low_bin_low = np.floor(bin_ind[ind_low]).astype(int)
+                  
+    N_above_underflow = np.sum((bin_ind[ind_low] - low_bin_low) 
+        * N_arr_low)
+    eng_above_underflow = N_above_underflow * new_eng[1]
+
+    N_underflow = np.sum(N_arr_low) - N_above_underflow
+    eng_underflow = np.sum(toteng_arr_low) - eng_above_underflow
+    low_dNdE = N_above_underflow/new_E_dlogE[1]
+
+    new_dNdE = np.zeros(new_eng.size)
+    new_dNdE[1] += low_dNdE
+    # reg_dNdE_low = -1 refers to new_eng[0]  
+    for i,ind in zip(np.arange(reg_bin_low.size), reg_bin_low):
+        new_dNdE[ind+1] += reg_dNdE_low[i]
+    for i,ind in zip(np.arange(reg_bin_upp.size), reg_bin_upp):
+        new_dNdE[ind+1] += reg_dNdE_upp[i]
+
+    # Generate the new Spectrum.
+
+    out_spec = Spectrum(new_eng[1:], new_dNdE[1:])
+    out_spec.underflow['N'] += N_underflow
+    out_spec.underflow['eng'] += eng_underflow
+
+    return out_spec
+
+def discretize(func_dNdE, eng):
+    """Discretizes a continuous function. 
+
+    The function is integrated between the bin boundaries specified by `eng` to obtain the discretized spectrum, so that the final spectrum conserves number and energy between the bin **boundaries**. 
+
+    Parameters
+    ----------
+    func_dNdE : function
         A single variable function that takes in energy as an input, and then returns a dN/dE spectrum value. 
     eng : ndarray
         The new abscissa after discretization. 
@@ -737,16 +855,24 @@ def discretize(func, eng):
     Spectrum
         The discretized spectrum. rs is set to -1, and must be set manually. 
     """
+    def func_EdNdE(eng):
+        return func_dNdE(eng)*eng
+
     bin_boundary = get_bin_bound(eng)
     log_bin_width = np.diff(np.log(bin_boundary))
+    # Generate a list of particle number N and mean energy eng_mean, so that N*eng_mean = total energy in each bin. eng_mean != eng. 
     N = np.zeros(eng.size)
+    eng_mean = np.zeros(eng.size)
     
     for low, upp, i in zip(bin_boundary[:-1], bin_boundary[1:], 
         np.arange(bin_width.size)):
     # Perform an integral over the spectrum for each bin.
-        N[i] = integrate.quad(func, low, upp)[0]
+        N[i] = integrate.quad(func_dNdE, low, upp)[0]
+    # Get the total energy stored in each bin. 
+        eng_mean[i] = integrate.quad(func_EdNdE, low, upp)[0]/N[i]
 
-    return Spectrum(eng, N/(eng*log_bin_width))
+
+    return rebin_N_arr(N, eng_mean, eng)
 
 
 
