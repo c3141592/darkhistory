@@ -302,9 +302,9 @@ def CMB_spec(eng, temp):
 
     """
     if np.issubdtype(type(eng), float):
-        eng_arr = np.array([eng])
-    prefactor = 8*np.pi*(eng_arr**2)/((ele_compton*me)**3)
-    phot_spec_density = prefactor*[1/(np.exp(photeng/temp) - 1) if photeng/temp < 500 else 0 for photeng in eng_arr]
+        eng = np.array([eng])
+    prefactor = 8*np.pi*(eng**2)/((ele_compton*me)**3)
+    phot_spec_density = prefactor*[1/(np.exp(photeng/temp) - 1) if photeng/temp < 500 else 0 for photeng in eng]
 
     if np.issubdtype(type(eng), float): 
         return phot_spec_density[0] 

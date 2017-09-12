@@ -79,7 +79,7 @@ class Spectrum:
 
         See Also
         --------
-        __radd__
+        spectrum.Spectrum.__radd__
 
         """
 
@@ -128,7 +128,7 @@ class Spectrum:
 
         See Also
         --------
-        __add__
+        spectrum.Spectrum.__add__
 
         """
         
@@ -177,7 +177,7 @@ class Spectrum:
 
         See Also
         --------
-        __rsub__
+        spectrum.Spectrum.__rsub__
 
         """
         return self + -1*other
@@ -200,7 +200,7 @@ class Spectrum:
 
         See Also
         --------
-        __sub__
+        spectrum.Spectrum.__sub__
 
         """
         return other + -1*self
@@ -235,7 +235,7 @@ class Spectrum:
 
         See Also
         --------
-        __rmul__
+        spectrum.Spectrum.__rmul__
 
         """
         if issubdtype(type(other),float) or issubdtype(type(other),int):
@@ -274,7 +274,7 @@ class Spectrum:
 
         See Also
         --------
-        __mul__
+        spectrum.Spectrum.__mul__
 
         """
         if issubdtype(type(other),float) or issubdtype(type(other),int):
@@ -848,28 +848,33 @@ def discretize(func_dNdE, eng):
     func_dNdE : function
         A single variable function that takes in energy as an input, and then returns a dN/dE spectrum value. 
     eng : ndarray
-        The new abscissa after discretization. 
+        Both the bin boundaries to integrate between and the new abscissa after discretization (bin centers). 
 
     Returns
     -------
     Spectrum
         The discretized spectrum. rs is set to -1, and must be set manually. 
+
+    Notes
+    -----
+
     """
     def func_EdNdE(eng):
         return func_dNdE(eng)*eng
 
-    bin_boundary = get_bin_bound(eng)
-    log_bin_width = np.diff(np.log(bin_boundary))
     # Generate a list of particle number N and mean energy eng_mean, so that N*eng_mean = total energy in each bin. eng_mean != eng. 
     N = np.zeros(eng.size)
     eng_mean = np.zeros(eng.size)
     
-    for low, upp, i in zip(bin_boundary[:-1], bin_boundary[1:], 
-        np.arange(bin_width.size)):
+    for low, upp, i in zip(eng[:-1], eng[1:], 
+        np.arange(eng.size-1)):
     # Perform an integral over the spectrum for each bin.
         N[i] = integrate.quad(func_dNdE, low, upp)[0]
     # Get the total energy stored in each bin. 
-        eng_mean[i] = integrate.quad(func_EdNdE, low, upp)[0]/N[i]
+        if N[i] > 0:
+            eng_mean[i] = integrate.quad(func_EdNdE, low, upp)[0]/N[i]
+        else:
+            eng_mean[i] = 0
 
 
     return rebin_N_arr(N, eng_mean, eng)
