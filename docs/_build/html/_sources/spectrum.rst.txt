@@ -18,3 +18,11 @@ spectrum module
 
         .. autoautosummary:: spectrum.Spectrum
             :methods:
+
+    .. autoclass:: spectrum.Spectra
+        :members:
+
+        .. rubric:: Methods
+
+        .. autoautosummary:: spectrum.Spectra
+            :methods:
