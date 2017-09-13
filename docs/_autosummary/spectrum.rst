@@ -20,6 +20,7 @@ spectrum
    .. autosummary::
    
       Spectrum
+      Spectra
    
    
 
