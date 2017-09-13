@@ -1,6 +1,10 @@
 """``spectrum`` contains functions and classes for processing spectral data."""
+<<<<<<< HEAD
 
 #hello
+=======
+#hello this is stupid
+>>>>>>> fc7cd1c10c38e63b38230bbc88b3c9e2adc29d6f
 import numpy as np
 import utilities as utils
 import matplotlib.pyplot as plt
