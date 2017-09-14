@@ -3,8 +3,6 @@
 import numpy as np
 import utilities as utils
 import matplotlib.pyplot as plt
-import time
-import warnings
 
 from scipy import integrate
 
@@ -729,14 +727,8 @@ class Spectra:
         self.bin_boundary = get_bin_bound(self.eng)
         self.log_bin_width = np.diff(np.log(self.bin_boundary))
 
-    @classmethod
-    def from_Spectrum_list(cls, spectrum_list):
-        if not utils.array_equal([spec.eng for spec in spectrum_list]):
-            raise TypeError("energy abscissa for the Spectrum objects are not the same.")
-        eng = spectrum_list[0].eng
-        dNdE_list = [spec.dNdE for spec in spectrum_list]
-        rs = np.array([spec.rs for spec in spectrum_list])
-        return cls(eng, dNdE_list, rs)
+    def __iter__(self):
+        return iter(self.spec_arr)
 
     def __add__(self, other): 
         """Adds two ``Spectra`` instances together.
@@ -876,11 +868,11 @@ class Spectra:
         spectrum.Spectra.__rmul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self.spec_arr], self.rs)
+            return Spectra(self.eng, [other*spec for spec in self], self.rs)
         elif np.issubclass_(type(other), Spectra):
             if self.rs is not other.rs or self.eng is not other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec1*spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra(self.eng, [spec1*spec2 for spec1,spec2 in zip(self, other)], self.rs)
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -905,11 +897,11 @@ class Spectra:
         spectrum.Spectra.__mul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self.spec_arr], self.rs)
+            return Spectra(self.eng, [other*spec for spec in self], self.rs)
         elif np.issubclass_(type(other), Spectra):
             if self.rs is not other.rs or self.eng is not other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec2*spec1 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra(self.eng, [spec2*spec1 for spec1,spec2 in zip(self, other)], self.rs)
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -933,7 +925,7 @@ class Spectra:
         spectrum.Spectra.__rtruediv__
         """
         if np.issubclass_(type(other), Spectra):
-            invSpec = Spectra(other.eng, [1./spec for spec in other.spec_arr], other.rs)
+            invSpec = Spectra(other.eng, [1./spec for spec in other], other.rs)
             return self*invSpec
         else:
             return self*(1/other)
@@ -957,7 +949,7 @@ class Spectra:
         --------
         spectrum.Spectra.__truediv__
         """
-        invSpec = Spectra(self.eng, [1./spec for spec in self.spec_arr], self.rs)
+        invSpec = Spectra(self.eng, [1./spec for spec in self], self.rs)
 
         return other*invSpec   
 
@@ -977,7 +969,7 @@ class Spectra:
             An array of weighted sums, one for each redshift in `self.rs`, with length `self.rs.size`. 
         """
         if isinstance(mat,np.ndarray):
-            return np.array([spec.contract(mat) for spec in self.spec_arr])
+            return np.array([spec.contract(mat) for spec in self])
 
         else:
             raise TypeError("mat must be an ndarray.")
@@ -999,7 +991,7 @@ class Spectra:
 
         """
         if isinstance(mat,np.ndarray):
-            dNdE_to_sum = [mat[i]*spec.dNdE for i,spec in zip(np.arange(mat.size), self.spec_arr)]
+            dNdE_to_sum = [mat[i]*spec.dNdE for i,spec in zip(np.arange(mat.size), self)]
             return np.sum(dNdE_to_sum, axis=0)
 
         else:
