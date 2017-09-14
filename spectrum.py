@@ -1060,7 +1060,10 @@ class Spectra:
         --------
         spectrum.Spectrum.rebin
         """
-        [spec.rebin(out_eng) for spec in self]
+        for spec in self:
+            spec.rebin(out_eng)
+
+        self.eng = out_eng
 
     def append(self, spec):
         """Appends a new ``Spectrum``. 
