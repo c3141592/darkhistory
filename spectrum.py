@@ -698,16 +698,16 @@ class Spectra:
     """Structure for a collection of ``Spectrum`` objects.
 
     Parameters
-    ----------
-    rs : ndarray
-        The redshifts of the ``Spectrum`` objects.
-    eng : ndarray
-        Energy abscissa for the ``Spectrum``. 
+    ---------- 
     spec_arr : list of ``Spectrum``
         List of ``Spectrum`` to be stored together.
 
     Attributes
     ----------
+    eng : ndarray
+        Energy abscissa for the ``Spectrum``.
+    rs : ndarray
+        The redshifts of the ``Spectrum`` objects.
     log_bin_width : ndarray
         The log bin width. 
     bin_boundary : ndarray
@@ -722,23 +722,24 @@ class Spectra:
     # ndarray first, which isn't what we want.
     __array_priority__ = 1
 
-    def __init__(self, eng, spec_arr, rs):
+    def __init__(self, spec_arr):
 
         if len(set(spec.length for spec in spec_arr)) > 1:
             raise TypeError("all spectra must have the same length.")
 
-        if len(spec_arr) != rs.size:
-            raise TypeError("number of spectra must be equal to redshift array length.")
+        if not utils.arrays_equal([spec.eng for spec in spec_arr]):
+            raise TypeError("all abscissae must be the same.")
 
-        if not np.all(np.diff(eng) > 0):
+        if not np.all(np.diff(spec_arr[0].eng) > 0):
             raise TypeError("abscissa must be ordered in increasing energy.")
 
-        if rs.size > 1 and not np.all(np.diff(rs) <= 0):
-            raise TypeError("redshift must be in increasing order.")
-
-        self.eng = eng 
-        self.rs  = rs
+        self.eng = spec_arr[0].eng
         self.spec_arr = spec_arr
+
+        self.rs = np.array([spec.rs for spec in spec_arr])
+
+        if self.rs.size > 1 and not np.all(np.diff(self.rs) <= 0):
+            raise TypeError("redshift must be in increasing order.")
 
         self.bin_boundary = get_bin_bound(self.eng)
         self.log_bin_width = np.diff(np.log(self.bin_boundary))
@@ -804,7 +805,7 @@ class Spectra:
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Spectra.')
 
-            return Spectra(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Spectra.')
 
@@ -836,7 +837,7 @@ class Spectra:
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Spectra.')
 
-            return Spectra(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Spectra.')
 
@@ -915,11 +916,11 @@ class Spectra:
         spectrum.Spectra.__rmul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self], self.rs)
+            return Spectra([other*spec for spec in self])
         elif np.issubclass_(type(other), Spectra):
             if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec1*spec2 for spec1,spec2 in zip(self, other)], self.rs)
+            return Spectra([spec1*spec2 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -944,11 +945,11 @@ class Spectra:
         spectrum.Spectra.__mul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self], self.rs)
+            return Spectra([other*spec for spec in self])
         elif np.issubclass_(type(other), Spectra):
             if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec2*spec1 for spec1,spec2 in zip(self, other)], self.rs)
+            return Spectra([spec2*spec1 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -972,7 +973,7 @@ class Spectra:
         spectrum.Spectra.__rtruediv__
         """
         if np.issubclass_(type(other), Spectra):
-            invSpec = Spectra(other.eng, [1./spec for spec in other], other.rs)
+            invSpec = Spectra([1./spec for spec in other])
             return self*invSpec
         else:
             return self*(1/other)
@@ -996,7 +997,7 @@ class Spectra:
         --------
         spectrum.Spectra.__truediv__
         """
-        invSpec = Spectra(self.eng, [1./spec for spec in self], self.rs)
+        invSpec = Spectra([1./spec for spec in self])
 
         return other*invSpec   
 
@@ -1044,6 +1045,22 @@ class Spectra:
             return Spectrum(self.eng, new_dNdE)
         else:
             raise TypeError("mat must be an ndarray.")
+
+    def rebin(self, out_eng):
+        """ Re-bins all ``Spectrum`` objects according to a new abscissa.
+
+        Rebinning conserves total number and total energy.
+        
+        Parameters
+        ----------
+        out_eng : ndarray
+            The new abscissa to bin into. If `self.eng` has values that are smaller than `out_eng[0]`, then the new underflow will be filled. If `self.eng` has values that exceed `out_eng[-1]`, then an error is returned.
+
+        See Also
+        --------
+        spectrum.Spectrum.rebin
+        """
+        [spec.rebin(out_eng) for spec in self]
 
     def append(self, spec):
         """Appends a new ``Spectrum``. 

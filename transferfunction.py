@@ -7,8 +7,8 @@ from scipy import interpolate
 
 class Transferfunction(spectrum.Spectra):
 
-    def __init__(self, eng, spec_arr, rs):
-        spectrum.Spectra.__init__(self, eng, spec_arr, rs)
+    def __init__(self, spec_arr):
+        spectrum.Spectra.__init__(self, spec_arr)
 
     def __iter__(self):
         return iter(self.spec_arr)
@@ -50,7 +50,7 @@ class Transferfunction(spectrum.Spectra):
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Transferfunction.')
 
-            return Transferfunction(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Transferfunction.')
 
@@ -64,7 +64,7 @@ class Transferfunction(spectrum.Spectra):
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Transferfunction.')
 
-            return Transferfunction(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Transferfunction.')
 
@@ -83,36 +83,36 @@ class Transferfunction(spectrum.Spectra):
     def __mul__(self, other):
        
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Transferfunction(self.eng, [other*spec for spec in self], self.rs)
+            return Transferfunction([other*spec for spec in self])
         elif np.issubclass_(type(other), Transferfunction):
             if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Transferfunction(self.eng, [spec1*spec2 for spec1,spec2 in zip(self, other)], self.rs)
+            return Transferfunction([spec1*spec2 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Transferfunction or scalars.")
 
     def __rmul__(self, other):
         
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Transferfunction(self.eng, [other*spec for spec in self], self.rs)
+            return Transferfunction([other*spec for spec in self])
         elif np.issubclass_(type(other), Transferfunction):
             if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Transferfunction(self.eng, [spec2*spec1 for spec1,spec2 in zip(self, other)], self.rs)
+            return Transferfunction([spec2*spec1 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Transferfunction or scalars.")
 
     def __truediv__(self,other):
         
         if np.issubclass_(type(other), Transferfunction):
-            invSpec = Transferfunction(other.eng, [1./spec for spec in other], other.rs)
+            invSpec = Transferfunction([1./spec for spec in other])
             return self*invSpec
         else:
             return self*(1/other)
 
     def __rtruediv__(self,other):
         
-        invSpec = Transferfunction(self.eng, [1./spec for spec in self], self.rs)
+        invSpec = Transferfunction([1./spec for spec in self])
 
         return other*invSpec
 
