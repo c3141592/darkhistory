@@ -730,6 +730,34 @@ class Spectra:
     def __iter__(self):
         return iter(self.spec_arr)
 
+    def __getitem__(self,key):
+        if isinstance(key, int) or isinstance(key, slice):
+            return self.spec_arr[key]
+        else:
+            return TypeError("index must be int.")
+
+    def __setitem__(self,key,value):
+        if isinstance(key, int):
+            if not isinstance(value, (list, tuple)):
+                if np.issubclass_(type(value), Spectrum):
+                    self.spec_arr[key] = value
+                else:
+                    return TypeError("can only add Spectrum.")
+            else:
+                return TypeError("can only add one spectrum per index.")
+        elif isinstance(key, slice):
+            if len(self.spec_arr[key]) == len(value):
+                for i,spec in zip(key,value): 
+                    if np.issubclass_(type(spec), Spectrum):
+                        self.spec_arr[i] = spec
+                    else: 
+                        return TypeError("can only add Spectrum.")
+            else:
+                return TypeError("can only add one spectrum per index.")
+        else:
+            return TypeError("index must be int.")
+
+
     def __add__(self, other): 
         """Adds two ``Spectra`` instances together.
 
