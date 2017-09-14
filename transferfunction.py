@@ -123,15 +123,15 @@ class Transferfunction(spectrum.Spectra):
 
         Parameters
         ----------
-            out_rs : float
-                The redshift (or redshift bin index) at which to interpolate. 
+            out_rs : ndarray
+                The redshifts (or redshift bin indices) at which to interpolate. 
             interp_type : {'val', 'bin'}
                 The type of interpolation. 'bin' uses bin index, while 'val' uses the actual redshift. 
 
         Returns
         -------
-        Spectrum
-            The interpolated spectrum. 
+        Spectra
+            The interpolated spectra. 
         """
 
         gridvalues = np.stack([spec.dNdE for spec in self.spec_arr])
@@ -139,10 +139,14 @@ class Transferfunction(spectrum.Spectra):
         interp = interpolate.interp2d(self.eng, np.log(self.rs), gridvalues)
 
         if interp_type == 'val':
-            return spectrum.Spectrum(self.eng, interp(self.eng, np.log(out_rs)), out_rs)
+            return Transferfunction(
+                [spectrum.Spectrum(self.eng, interp(self.eng, np.log(rs)), rs) for rs in out_rs]
+                )
         elif interp_type == 'bin':
             log_rs_value = np.interp(out_rs, np.arange(self.rs.size), np.log(self.rs))
-            return spectrum.Spectrum(self.eng, interp(self.eng, log_rs_value), out_rs)
+            return Transferfunction(
+                [spectrum.Spectrum(self.eng, interp(self.eng, log_rs_value), rs) for rs in out_rs]
+                )
         else:
             raise TypeError("Invalid interp_type specified.")
 
