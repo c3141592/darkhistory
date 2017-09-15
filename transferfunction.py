@@ -14,7 +14,7 @@ class Transferfunction(spectrum.Spectra):
         return iter(self.spec_arr)
 
     def __getitem__(self,key):
-        if isinstance(key, int) or isinstance(key, slice):
+        if np.issubdtype(key, int) or isinstance(key, slice):
             return self.spec_arr[key]
         else:
             raise TypeError("index must be int.")
