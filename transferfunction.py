@@ -50,8 +50,11 @@ class Transferfunction(spectrum.Spectra):
                 raise TypeError('abscissae are different for the two Transferfunction.')
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Transferfunction.')
+            if not self.in_eng == other.in_eng:
+                raise TypeError('injection energies are different \
+                    for the two Transferfunction.')
 
-            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
+            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.in_eng)
 
         else: raise TypeError('adding an object that is not of class Transferfunction.')
 
@@ -61,13 +64,20 @@ class Transferfunction(spectrum.Spectra):
         if np.issubclass_(type(other), Transferfunction):
 
             if not util.array_equal(self.eng, other.eng):
-                raise TypeError('abscissae are different for the two Transferfunction.')
+                raise TypeError('abscissae are different for the \
+                    two Transferfunction.')
             if not util.array_equal(self.rs, other.rs):
-                raise TypeError('redshifts are different for the two Transferfunction.')
+                raise TypeError('redshifts are different for the \
+                    two Transferfunction.')
+            if self.in_eng != other.in_eng:
+                raise TypeError('injection energies are different \
+                    for the two Transferfunction.')
 
-            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
+            return Transferfunction([spec1 + spec2 for spec1,spec2 in zip(
+                self.spec_arr, other.spec_arr)], self.in_eng)
 
-        else: raise TypeError('adding an object that is not of class Transferfunction.')
+        else: raise TypeError('adding an object that is not of \
+                    class Transferfunction.')
 
     def __sub__(self, other):
         
@@ -83,23 +93,35 @@ class Transferfunction(spectrum.Spectra):
 
     def __mul__(self, other):
        
-        if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Transferfunction([other*spec for spec in self])
+        if (np.issubdtype(type(other), float) 
+            or np.issubdtype(type(other), int)):
+            return Transferfunction([other*spec for spec in self], 
+                self.in_eng)
         elif np.issubclass_(type(other), Transferfunction):
             if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Transferfunction([spec1*spec2 for spec1,spec2 in zip(self, other)])
+            if self.in_eng != other.in_eng:
+                raise TypeError('injection energies are different \
+                    for the two Transferfunction.')
+            return Transferfunction([spec1*spec2 
+                for spec1,spec2 in zip(self, other)], self.in_eng)
         else:
             raise TypeError("can only multiply Transferfunction or scalars.")
 
     def __rmul__(self, other):
         
-        if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
+        if (np.issubdtype(type(other), float) 
+            or np.issubdtype(type(other), int)):
             return Transferfunction([other*spec for spec in self])
         elif np.issubclass_(type(other), Transferfunction):
             if self.rs != other.rs or self.eng != other.eng:
-                raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Transferfunction([spec2*spec1 for spec1,spec2 in zip(self, other)])
+                raise TypeError("the two spectra do not have the \
+                    same redshift or abscissae.")
+            if self.in_eng != other.in_eng:
+                raise TypeError('injection energies are different \
+                    for the two Transferfunction.')
+            return Transferfunction([spec2*spec1 
+                for spec1,spec2 in zip(self, other)], self.in_eng)
         else:
             raise TypeError("can only multiply Transferfunction or scalars.")
 

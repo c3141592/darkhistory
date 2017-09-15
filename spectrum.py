@@ -731,7 +731,7 @@ class Spectra:
             raise TypeError("abscissa must be ordered in increasing energy.")
 
         self.spec_arr = spec_arr
-
+        
         if rebin_eng is not None:
             self.rebin(rebin_eng)
 
