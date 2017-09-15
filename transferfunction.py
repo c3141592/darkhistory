@@ -7,14 +7,15 @@ from scipy import interpolate
 
 class Transferfunction(spectrum.Spectra):
 
-    def __init__(self, spec_arr):
-        spectrum.Spectra.__init__(self, spec_arr)
+    def __init__(self, spec_arr, in_eng, rebin_eng=None):
+        spectrum.Spectra.__init__(self, spec_arr, rebin_eng)
+        self.in_eng = in_eng
 
     def __iter__(self):
         return iter(self.spec_arr)
 
     def __getitem__(self,key):
-        if np.issubdtype(key, int) or isinstance(key, slice):
+        if np.issubdtype(type(key), int) or isinstance(key, slice):
             return self.spec_arr[key]
         else:
             raise TypeError("index must be int.")
@@ -134,18 +135,17 @@ class Transferfunction(spectrum.Spectra):
             The interpolated spectra. 
         """
 
-        gridvalues = np.stack([spec.dNdE for spec in self.spec_arr])
-
-        interp = interpolate.interp2d(self.eng, np.log(self.rs), gridvalues)
+        interp = interpolate.interp2d(self.eng, np.log(self.rs), 
+            self.grid_values)
 
         if interp_type == 'val':
             return Transferfunction(
-                [spectrum.Spectrum(self.eng, interp(self.eng, np.log(rs)), rs) for rs in out_rs]
+                [spectrum.Spectrum(self.eng, interp(self.eng, np.log(rs)), rs) for rs in out_rs], self.in_eng
                 )
         elif interp_type == 'bin':
             log_rs_value = np.interp(out_rs, np.arange(self.rs.size), np.log(self.rs))
             return Transferfunction(
-                [spectrum.Spectrum(self.eng, interp(self.eng, log_rs_value), rs) for rs in out_rs]
+                [spectrum.Spectrum(self.eng, interp(self.eng, log_rs_value), rs) for rs in out_rs], self.in_eng
                 )
         else:
             raise TypeError("Invalid interp_type specified.")

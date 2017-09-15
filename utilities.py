@@ -66,3 +66,16 @@ def div_ignore_by_zero(a, b, val=0):
         c = np.true_divide(a,b)
         c[~ np.isfinite(c)] = val
     return c
+
+def compare_arr(ndarray_list):
+    """ Prints the arrays in a suitable format for comparison.
+
+    Parameters
+    ----------
+    ndarray_list : list of ndarray
+        The list of 1D arrays to compare.
+    """
+
+    print(np.stack(ndarray_list, axis=-1))
+
+    return 0

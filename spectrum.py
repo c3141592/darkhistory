@@ -722,20 +722,24 @@ class Spectra:
     # ndarray first, which isn't what we want.
     __array_priority__ = 1
 
-    def __init__(self, spec_arr):
+    def __init__(self, spec_arr, rebin_eng=None):
 
         if len(set(spec.length for spec in spec_arr)) > 1:
             raise TypeError("all spectra must have the same length.")
 
-        if not utils.arrays_equal([spec.eng for spec in spec_arr]):
-            raise TypeError("all abscissae must be the same.")
-
         if not np.all(np.diff(spec_arr[0].eng) > 0):
             raise TypeError("abscissa must be ordered in increasing energy.")
 
-        self.eng = spec_arr[0].eng
         self.spec_arr = spec_arr
 
+        if rebin_eng is not None:
+            self.rebin(rebin_eng)
+
+        if not utils.arrays_equal([spec.eng for spec in spec_arr]):
+            raise TypeError("all abscissae must be the same.")
+
+        self.eng = spec_arr[0].eng
+        
         self.rs = np.array([spec.rs for spec in spec_arr])
 
         if self.rs.size > 1 and not np.all(np.diff(self.rs) <= 0):
