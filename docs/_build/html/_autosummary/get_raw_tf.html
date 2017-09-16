@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>utilities &mdash; DarkHistory  documentation</title>
+  <title>get_raw_tf &mdash; DarkHistory  documentation</title>
   
 
   
@@ -37,7 +37,8 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="DarkHistory  documentation" href="../index.html"/>
         <link rel="up" title="darkhistory" href="../modules.html"/>
-        <link rel="prev" title="transferfunction" href="transferfunction.html"/> 
+        <link rel="next" title="physics" href="physics.html"/>
+        <link rel="prev" title="darkhistory" href="../modules.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -89,11 +90,11 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../modules.html">darkhistory</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="get_raw_tf.html">get_raw_tf</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get_raw_tf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="physics.html">physics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spectrum.html">spectrum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transferfunction.html">transferfunction</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities</a></li>
 </ul>
 </li>
 </ul>
@@ -142,13 +143,13 @@
         
           <li><a href="../modules.html">darkhistory</a> &raquo;</li>
         
-      <li>utilities</li>
+      <li>get_raw_tf</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/_autosummary/utilities.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/get_raw_tf.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -161,9 +162,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-utilities">
-<span id="utilities"></span><h1>utilities<a class="headerlink" href="#module-utilities" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal"><span class="pre">utilities</span></code> contains useful, non-physics functions used in DarkHistory.</p>
+  <div class="section" id="module-get_raw_tf">
+<span id="get-raw-tf"></span><h1>get_raw_tf<a class="headerlink" href="#module-get_raw_tf" title="Permalink to this headline">¶</a></h1>
+<p>Functions for importing raw transfer function data.</p>
+<p>Abscissa values are subject to change.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -171,17 +173,11 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="../utilities.html#utilities.arrays_equal" title="utilities.arrays_equal"><code class="xref py py-obj docutils literal"><span class="pre">arrays_equal</span></code></a>(ndarray_list)</td>
-<td>Check if the arrays contained in <cite>ndarray_list</cite> are equal.</td>
+<tr class="row-odd"><td><a class="reference internal" href="../get_raw_tf.html#get_raw_tf.get_out_eng_absc" title="get_raw_tf.get_out_eng_absc"><code class="xref py py-obj docutils literal"><span class="pre">get_out_eng_absc</span></code></a>(in_eng)</td>
+<td>Returns the output energy abscissa for a given input energy.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../utilities.html#utilities.div_ignore_by_zero" title="utilities.div_ignore_by_zero"><code class="xref py py-obj docutils literal"><span class="pre">div_ignore_by_zero</span></code></a>(a,&nbsp;b[,&nbsp;val])</td>
-<td>Divides <cite>a</cite> by <cite>b</cite>, returning <cite>val</cite> if a divide-by-zero error occurs.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="../utilities.html#utilities.is_log_spaced" title="utilities.is_log_spaced"><code class="xref py py-obj docutils literal"><span class="pre">is_log_spaced</span></code></a>(arr)</td>
-<td>Checks if <cite>arr</cite> is a log-spaced array.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="../utilities.html#utilities.compare_arr" title="utilities.compare_arr"><code class="xref py py-obj docutils literal"><span class="pre">compare_arr</span></code></a>(ndarray_list)</td>
-<td>Prints the arrays in a suitable format for comparison.</td>
+<tr class="row-even"><td><a class="reference internal" href="../get_raw_tf.html#get_raw_tf.process_raw_tf" title="get_raw_tf.process_raw_tf"><code class="xref py py-obj docutils literal"><span class="pre">process_raw_tf</span></code></a>(file)</td>
+<td>Processes raw data to return transfer functions.</td>
 </tr>
 </tbody>
 </table>
@@ -197,8 +193,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="physics.html" class="btn btn-neutral float-right" title="physics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="transferfunction.html" class="btn btn-neutral" title="transferfunction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="../modules.html" class="btn btn-neutral" title="darkhistory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

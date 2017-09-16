@@ -382,7 +382,8 @@ class Spectrum:
 
             if bound_type == 'bin':
 
-                if not all(np.diff(bound_arr) > 0):
+                if not all(np.diff(bound_arr) >= 0):
+                    print(bound_arr)
                     raise TypeError("bound_arr must have increasing entries.")
 
                 N_in_bin = np.zeros(bound_arr.size-1)
@@ -428,7 +429,7 @@ class Spectrum:
 
                 eng_bin_ind = np.interp( 
                     np.log(bound_arr), 
-                    np.log(self.bin_boundary), np.arange(bin_boundary.size), 
+                    np.log(self.bin_boundary), np.arange(self.bin_boundary.size), 
                     left = -1, right = length + 1)
 
                 return self.totN('bin', eng_bin_ind)
@@ -701,13 +702,15 @@ class Spectra:
     ---------- 
     spec_arr : list of ``Spectrum``
         List of ``Spectrum`` to be stored together.
+    rebin_eng : ndarray, optional
+        New abscissa to rebin all of the ``Spectrum`` objects into.
 
     Attributes
     ----------
     eng : ndarray
         Energy abscissa for the ``Spectrum``.
     rs : ndarray
-        The redshifts of the ``Spectrum`` objects.
+        The redshifts of the ``Spectrum`` objects. 
     log_bin_width : ndarray
         The log bin width. 
     bin_boundary : ndarray
@@ -1005,36 +1008,39 @@ class Spectra:
 
         return other*invSpec   
 
-    def integrate_spec_by_weight(self,weight):
+    def integrate_each_spec(self,weight=None):
         """Sums each ``Spectrum``, each `eng` bin weighted by `weight`. 
 
         Equivalent to contracting `weight` with each `dNdE` in ``Spectra``, `weight` should have length `self.length`. 
 
         Parameters
         ----------
-        weight : ndarray
-            The weight in each energy bin. 
+        weight : ndarray, optional
+            The weight in each energy bin, with weight of 1 for every bin if not specified. 
 
         Returns
         -------
         ndarray
             An array of weighted sums, one for each redshift in `self.rs`, with length `self.rs.size`. 
         """
+        if weight is None:
+            weight = np.ones(self.eng.size)
+
         if isinstance(weight,np.ndarray):
             return np.array([spec.contract(weight) for spec in self])
 
         else:
             raise TypeError("mat must be an ndarray.")
 
-    def sum_specs_by_weight(self,weight):
+    def sum_specs(self,weight=None):
         """Sums the spectrum in each energy bin, weighted by `mat`. 
 
         Equivalent to contracting `mat` with `[spec.dNdE[i] for spec in spec_arr]` for all `i`. `mat` should have length `self.rs.size`. 
 
         Parameters
         ----------
-        mat : ndarray or ``Spectrum``
-            The weight in each redshift bin. 
+        weight : ndarray or ``Spectrum``, optional
+            The weight in each redshift bin, with weight of 1 for every bin if not specified.
 
         Returns
         -------
@@ -1042,6 +1048,9 @@ class Spectra:
             An array or ``Spectrum`` of weight sums, one for each energy in `self.eng`, with length `self.length`. 
 
         """
+        if weight is None:
+            weight = np.ones(self.rs.size)
+
         if isinstance(weight, np.ndarray):
             return np.dot(weight, self.grid_values)
         elif isinstance(weight, Spectrum):

@@ -6,7 +6,32 @@ import spectrum
 from scipy import interpolate
 
 class Transferfunction(spectrum.Spectra):
+    """Collection of ``Spectrum`` objects for transfer functions.
 
+    Parameters
+    ---------- 
+    spec_arr : list of ``Spectrum``
+        List of ``Spectrum`` to be stored together.
+    in_eng : float
+        Injection energy of this transfer function. 
+    rebin_eng : ndarray, optional
+        New abscissa to rebin all of the ``Spectrum`` objects into. 
+
+    Attributes
+    ----------
+    eng : ndarray
+        Energy abscissa for the ``Spectrum``.
+    rs : ndarray
+        The redshifts of the ``Spectrum`` objects.
+    log_bin_width : ndarray
+        The log bin width. 
+    bin_boundary : ndarray
+        The boundary of each energy bin. Has one more entry than `length`. 
+    grid_values : ndarray
+        2D array with the spectra laid out in (rs, eng). 
+    
+
+    """
     def __init__(self, spec_arr, in_eng, rebin_eng=None):
         spectrum.Spectra.__init__(self, spec_arr, rebin_eng)
         self.in_eng = in_eng
@@ -153,7 +178,7 @@ class Transferfunction(spectrum.Spectra):
 
         Returns
         -------
-        Spectra
+        Transferfunction
             The interpolated spectra. 
         """
 

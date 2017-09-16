@@ -1,4 +1,4 @@
-"""Functions for importing transfer function data.
+"""Functions for importing raw transfer function data.
 
 Abscissa values are subject to change."""
 
@@ -32,7 +32,20 @@ def get_out_eng_absc(in_eng):
     return np.sqrt(bin_boundary_low * bin_boundary_upp)
 
 def process_raw_tf(file):
+    """Processes raw data to return transfer functions.
+    
+    Parameters
+    ----------
+    file : str
+        File to be processed. 
 
+    Returns
+    -------
+    list of Transferfunction
+        List indexed by injection energy. 
+
+
+    """
 
     #Redshift abscissa. In decreasing order.
     rs_step = 50
