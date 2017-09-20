@@ -3,8 +3,6 @@
 import numpy as np
 import utilities as utils
 import matplotlib.pyplot as plt
-import time
-import warnings
 
 from scipy import integrate
 
@@ -220,7 +218,7 @@ class Spectrum:
 
         Parameters
         ----------
-        other : ndarray, float or int
+        other : Spectrum, ndarray, float or int
 
         Returns
         -------
@@ -244,11 +242,16 @@ class Spectrum:
             new_spectrum.underflow['eng'] = self.underflow['eng']*other
             return new_spectrum
 
-        # Removed ability to multiply two ``Spectrum`` objects, doesn't seem like there's a physical reason for us to implement this.
-
         elif isinstance(other, np.ndarray):
 
             return Spectrum(self.eng, self.dNdE*other, self.rs)
+
+        elif isinstance(other, Spectrum):
+            if not np.array_equal(self.eng, other.eng):
+                raise TypeError("energy abscissae are not the same.")
+            if self.rs != other.rs:
+                raise TypeError("redshifts are not the same.")
+            return Spectrum(self.eng, self.dNdE*other.dNdE, self.rs)
 
         else:
 
@@ -379,7 +382,8 @@ class Spectrum:
 
             if bound_type == 'bin':
 
-                if not all(np.diff(bound_arr) > 0):
+                if not all(np.diff(bound_arr) >= 0):
+                    print(bound_arr)
                     raise TypeError("bound_arr must have increasing entries.")
 
                 N_in_bin = np.zeros(bound_arr.size-1)
@@ -425,7 +429,7 @@ class Spectrum:
 
                 eng_bin_ind = np.interp( 
                     np.log(bound_arr), 
-                    np.log(self.bin_boundary), np.arange(bin_boundary.size), 
+                    np.log(self.bin_boundary), np.arange(self.bin_boundary.size), 
                     left = -1, right = length + 1)
 
                 return self.totN('bin', eng_bin_ind)
@@ -604,6 +608,10 @@ class Spectrum:
         reg_bin_low = np.floor(bin_ind[ind_reg]).astype(int)
         reg_bin_upp = reg_bin_low + 1
 
+        # Takes care of the case where in_eng[-1] = out_eng[-1]
+        reg_bin_low[reg_bin_low == new_eng.size-2] = new_eng.size - 3
+        reg_bin_upp[reg_bin_upp == new_eng.size-1] = new_eng.size - 2
+
         reg_N_low = (reg_bin_upp - bin_ind[ind_reg]) * N_arr_reg
         reg_N_upp = (bin_ind[ind_reg] - reg_bin_low) * N_arr_reg
 
@@ -691,16 +699,25 @@ class Spectra:
     """Structure for a collection of ``Spectrum`` objects.
 
     Parameters
-    ----------
-    rs : ndarray
-        The redshifts of the ``Spectrum`` objects.
-    eng : ndarray
-        Energy abscissa for the ``Spectrum``. 
+    ---------- 
     spec_arr : list of ``Spectrum``
         List of ``Spectrum`` to be stored together.
+    rebin_eng : ndarray, optional
+        New abscissa to rebin all of the ``Spectrum`` objects into.
 
     Attributes
     ----------
+    eng : ndarray
+        Energy abscissa for the ``Spectrum``.
+    rs : ndarray
+        The redshifts of the ``Spectrum`` objects. 
+    log_bin_width : ndarray
+        The log bin width. 
+    bin_boundary : ndarray
+        The boundary of each energy bin. Has one more entry than `length`. 
+    grid_values : ndarray
+        2D array with the spectra laid out in (rs, eng). 
+    
 
     """
     # __array_priority__ must be larger than 0, so that radd can work.
@@ -708,35 +725,65 @@ class Spectra:
     # ndarray first, which isn't what we want.
     __array_priority__ = 1
 
-    def __init__(self, eng, spec_arr, rs):
+    def __init__(self, spec_arr, rebin_eng=None):
 
         if len(set(spec.length for spec in spec_arr)) > 1:
             raise TypeError("all spectra must have the same length.")
 
-        if len(spec_arr) != rs.size:
-            raise TypeError("number of spectra must be equal to redshift array length.")
-
-        if not np.all(np.diff(eng) > 0):
+        if not np.all(np.diff(spec_arr[0].eng) > 0):
             raise TypeError("abscissa must be ordered in increasing energy.")
 
-        if not np.all(np.diff(rs) <= 0):
-            raise TypeError("redshift must be in increasing order.")
-
-        self.eng = eng 
-        self.rs  = rs
         self.spec_arr = spec_arr
+        
+        if rebin_eng is not None:
+            self.rebin(rebin_eng)
+
+        if not utils.arrays_equal([spec.eng for spec in spec_arr]):
+            raise TypeError("all abscissae must be the same.")
+
+        self.eng = spec_arr[0].eng
+        
+        self.rs = np.array([spec.rs for spec in spec_arr])
+
+        if self.rs.size > 1 and not np.all(np.diff(self.rs) <= 0):
+            raise TypeError("redshift must be in increasing order.")
 
         self.bin_boundary = get_bin_bound(self.eng)
         self.log_bin_width = np.diff(np.log(self.bin_boundary))
 
-    @classmethod
-    def from_Spectrum_list(cls, spectrum_list):
-        if not utils.array_equal([spec.eng for spec in spectrum_list]):
-            raise TypeError("energy abscissa for the Spectrum objects are not the same.")
-        eng = spectrum_list[0].eng
-        dNdE_list = [spec.dNdE for spec in spectrum_list]
-        rs = np.array([spec.rs for spec in spectrum_list])
-        return cls(eng, dNdE_list, rs)
+        self.grid_values = np.stack([spec.dNdE for spec in self.spec_arr])
+
+
+    def __iter__(self):
+        return iter(self.spec_arr)
+
+    def __getitem__(self,key):
+        if isinstance(key, int) or isinstance(key, slice):
+            return self.spec_arr[key]
+        else:
+            raise TypeError("index must be int.")
+
+    def __setitem__(self,key,value):
+        if isinstance(key, int):
+            if not isinstance(value, (list, tuple)):
+                if np.issubclass_(type(value), Spectrum):
+                    self.spec_arr[key] = value
+                else:
+                    raise TypeError("can only add Spectrum.")
+            else:
+                raise TypeError("can only add one spectrum per index.")
+        elif isinstance(key, slice):
+            if len(self.spec_arr[key]) == len(value):
+                for i,spec in zip(key,value): 
+                    if np.issubclass_(type(spec), Spectrum):
+                        self.spec_arr[i] = spec
+                    else: 
+                        raise TypeError("can only add Spectrum.")
+            else:
+                raise TypeError("can only add one spectrum per index.")
+        else:
+            raise TypeError("index must be int.")
+
 
     def __add__(self, other): 
         """Adds two ``Spectra`` instances together.
@@ -765,7 +812,7 @@ class Spectra:
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Spectra.')
 
-            return Spectra(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Spectra.')
 
@@ -797,7 +844,7 @@ class Spectra:
             if not util.array_equal(self.rs, other.rs):
                 raise TypeError('redshifts are different for the two Spectra.')
 
-            return Spectra(self.eng, [spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec1 + spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)])
 
         else: raise TypeError('adding an object that is not of class Spectra.')
 
@@ -876,11 +923,11 @@ class Spectra:
         spectrum.Spectra.__rmul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self.spec_arr], self.rs)
+            return Spectra([other*spec for spec in self])
         elif np.issubclass_(type(other), Spectra):
-            if self.rs is not other.rs or self.eng is not other.eng:
+            if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec1*spec2 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec1*spec2 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -905,11 +952,11 @@ class Spectra:
         spectrum.Spectra.__mul__
         """
         if np.issubdtype(type(other), float) or np.issubdtype(type(other), int):
-            return Spectra(self.eng, [other*spec for spec in self.spec_arr], self.rs)
+            return Spectra([other*spec for spec in self])
         elif np.issubclass_(type(other), Spectra):
-            if self.rs is not other.rs or self.eng is not other.eng:
+            if self.rs != other.rs or self.eng != other.eng:
                 raise TypeError("the two spectra do not have the same redshift or abscissae.")
-            return Spectra(self.eng, [spec2*spec1 for spec1,spec2 in zip(self.spec_arr, other.spec_arr)], self.rs)
+            return Spectra([spec2*spec1 for spec1,spec2 in zip(self, other)])
         else:
             raise TypeError("can only multiply Spectra or scalars.")
 
@@ -933,7 +980,7 @@ class Spectra:
         spectrum.Spectra.__rtruediv__
         """
         if np.issubclass_(type(other), Spectra):
-            invSpec = Spectra(other.eng, [1./spec for spec in other.spec_arr], other.rs)
+            invSpec = Spectra([1./spec for spec in other])
             return self*invSpec
         else:
             return self*(1/other)
@@ -957,53 +1004,79 @@ class Spectra:
         --------
         spectrum.Spectra.__truediv__
         """
-        invSpec = Spectra(self.eng, [1./spec for spec in self.spec_arr], self.rs)
+        invSpec = Spectra([1./spec for spec in self])
 
         return other*invSpec   
 
-    def sum_weight_eng(self,mat):
-        """Sums each ``Spectrum``, each `eng` bin weighted by `mat`. 
+    def integrate_each_spec(self,weight=None):
+        """Sums each ``Spectrum``, each `eng` bin weighted by `weight`. 
 
-        Equivalent to contracting `mat` with each `dNdE` in ``Spectra``, `mat` should have length `self.length`. 
+        Equivalent to contracting `weight` with each `dNdE` in ``Spectra``, `weight` should have length `self.length`. 
 
         Parameters
         ----------
-        mat : ndarray
-            The weight in each energy bin. 
+        weight : ndarray, optional
+            The weight in each energy bin, with weight of 1 for every bin if not specified. 
 
         Returns
         -------
         ndarray
             An array of weighted sums, one for each redshift in `self.rs`, with length `self.rs.size`. 
         """
-        if isinstance(mat,np.ndarray):
-            return np.array([spec.contract(mat) for spec in self.spec_arr])
+        if weight is None:
+            weight = np.ones(self.eng.size)
+
+        if isinstance(weight,np.ndarray):
+            return np.array([spec.contract(weight) for spec in self])
 
         else:
             raise TypeError("mat must be an ndarray.")
 
-    def sum_weight_rs(self,mat):
+    def sum_specs(self,weight=None):
         """Sums the spectrum in each energy bin, weighted by `mat`. 
 
         Equivalent to contracting `mat` with `[spec.dNdE[i] for spec in spec_arr]` for all `i`. `mat` should have length `self.rs.size`. 
 
         Parameters
         ----------
-        mat : ndarray
-            The weight in each redshift bin. 
+        weight : ndarray or ``Spectrum``, optional
+            The weight in each redshift bin, with weight of 1 for every bin if not specified.
 
         Returns
         -------
-        ndarray
-            An array of weight sums, one for each energy in `self.eng`, with length `self.length`. 
+        ndarray or ``Spectrum``
+            An array or ``Spectrum`` of weight sums, one for each energy in `self.eng`, with length `self.length`. 
 
         """
-        if isinstance(mat,np.ndarray):
-            dNdE_to_sum = [mat[i]*spec.dNdE for i,spec in zip(np.arange(mat.size), self.spec_arr)]
-            return np.sum(dNdE_to_sum, axis=0)
+        if weight is None:
+            weight = np.ones(self.rs.size)
 
+        if isinstance(weight, np.ndarray):
+            return np.dot(weight, self.grid_values)
+        elif isinstance(weight, Spectrum):
+            new_dNdE = np.dot(weight.dNdE, self.grid_values)
+            return Spectrum(self.eng, new_dNdE)
         else:
             raise TypeError("mat must be an ndarray.")
+
+    def rebin(self, out_eng):
+        """ Re-bins all ``Spectrum`` objects according to a new abscissa.
+
+        Rebinning conserves total number and total energy.
+        
+        Parameters
+        ----------
+        out_eng : ndarray
+            The new abscissa to bin into. If `self.eng` has values that are smaller than `out_eng[0]`, then the new underflow will be filled. If `self.eng` has values that exceed `out_eng[-1]`, then an error is returned.
+
+        See Also
+        --------
+        spectrum.Spectrum.rebin
+        """
+        for spec in self:
+            spec.rebin(out_eng)
+
+        self.eng = out_eng
 
     def append(self, spec):
         """Appends a new ``Spectrum``. 
@@ -1012,9 +1085,9 @@ class Spectra:
         ----------
         spec : Spectrum
         """
-        if not array_equal(self.eng, spec.eng):
+        if not np.array_equal(self.eng, spec.eng):
             raise TypeError("new Spectrum does not have the same energy abscissa.")
-        if self.rs.size > 0 and self.rs[-1] < spec.rs: 
+        if self.rs.size > 1 and self.rs[-1] < spec.rs: 
             raise TypeError("new Spectrum has a larger redshift than the current last entry.")
 
         self.spec_arr.append(spec)
@@ -1030,13 +1103,20 @@ class Spectra:
 
         step : int, optional
             The number of steps to take before choosing one ``Spectrum`` to plot. 
+
+        Returns
+        -------
+        matplotlib.figure
         """
+        fig = plt.figure()
         if np.issubdtype(type(ind), int):
             plt.plot(self.eng, self.spec_arr[ind].dNdE)
+            return fig
         elif np.issubdtype(type(ind), tuple):
             spec_to_plot = np.stack([self.spec_arr[i].dNdE for i in np.arange(ind[0], ind[1], step)], 
                 axis=-1)
             plt.plot(self.eng, spec_to_plot)
+            return fig
         else:
             raise TypeError("ind should be either an integer or a tuple of integers.")
 
@@ -1108,7 +1188,8 @@ def rebin_N_arr(N_arr, in_eng, out_eng):
     --------
     spectrum.Spectrum.rebin
     """
-    if N_arr.size is not in_eng.size:
+
+    if N_arr.size != in_eng.size:
         raise TypeError("The array for number of particles has a different length from the abscissa.")
 
     if not np.all(np.diff(out_eng) > 0):
@@ -1151,6 +1232,10 @@ def rebin_N_arr(N_arr, in_eng, out_eng):
     # reg_bin_low is the array of the lower bins to be allocated the particles in N_arr_reg, similarly reg_bin_upp. This should also take care of the fact that bin_ind is an integer.
     reg_bin_low = np.floor(bin_ind[ind_reg]).astype(int)
     reg_bin_upp = reg_bin_low + 1
+
+    # Takes care of the case where in_eng[-1] = out_eng[-1]
+    reg_bin_low[reg_bin_low == new_eng.size-2] = new_eng.size - 3
+    reg_bin_upp[reg_bin_upp == new_eng.size-1] = new_eng.size - 2
 
     reg_N_low = (reg_bin_upp - bin_ind[ind_reg]) * N_arr_reg
     reg_N_upp = (bin_ind[ind_reg] - reg_bin_low) * N_arr_reg
