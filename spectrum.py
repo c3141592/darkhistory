@@ -3,6 +3,7 @@
 import numpy as np
 import utilities as utils
 import matplotlib.pyplot as plt
+import warnings
 
 from scipy import integrate
 
@@ -553,8 +554,8 @@ class Spectrum:
         """
         if not np.all(np.diff(out_eng) > 0):
             raise TypeError("new abscissa must be ordered in increasing energy.")
-        if out_eng[-1] < self.eng[-1]:
-            raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
+        # if out_eng[-1] < self.eng[-1]:
+        #     raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
         # Get the bin indices that the current abscissa (self.eng) corresponds to in the new abscissa (new_eng). Can be any number between 0 and self.length-1. Bin indices are wrt the bin centers.
 
         # Add an additional bin at the lower end of out_eng so that underflow can be treated easily.
@@ -574,7 +575,8 @@ class Spectrum:
         ind_reg = np.where( (bin_ind >= 0) & (bin_ind <= new_eng.size - 1) )
 
         if ind_high[0].size > 0: 
-            raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
+            warnings.warn("The new abscissa lies below the old one: only bins that lie within the new abscissa will be rebinned, bins above the abscissa will be discarded.", RuntimeWarning)
+            # raise OverflowError("the new abscissa lies below the old one: this function cannot handle overflow (yet?).")
 
 
         # Filters to pick out the correct parts of arrays. Correct indices are set to 1, incorrect indices set to 0. 
@@ -758,13 +760,13 @@ class Spectra:
         return iter(self.spec_arr)
 
     def __getitem__(self,key):
-        if isinstance(key, int) or isinstance(key, slice):
+        if np.issubdtype(type(key), int) or isinstance(key, slice):
             return self.spec_arr[key]
         else:
             raise TypeError("index must be int.")
 
     def __setitem__(self,key,value):
-        if isinstance(key, int):
+        if np.issubdtype(type(key), int):
             if not isinstance(value, (list, tuple)):
                 if np.issubclass_(type(value), Spectrum):
                     self.spec_arr[key] = value
