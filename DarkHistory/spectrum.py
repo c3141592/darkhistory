@@ -523,6 +523,26 @@ class Spectrum:
             return (np.dot(dNdlogE, eng * log_bin_width) 
                 + self.underflow['eng'])
 
+    def shift_eng(self, new_eng):
+        """ Description goes here. 
+        """
+        if new_eng.size != self.eng.size:
+            return TypeError("The new abscissa must have the same length as the old one.")
+        if not all(np.diff(new_eng) > 0):
+            raise TypeError("abscissa must be ordered in increasing energy.")
+
+        new_bin_boundary = get_bin_bound(new_eng)
+        new_log_bin_width = np.diff(np.log(new_bin_boundary))
+        
+        new_spec = Spectrum(new_eng, self.dNdE, self.rs)
+        new_dNdE = self.totN('bin',np.arange(new_eng.size+1))/(new_eng * new_log_bin_width)
+
+        self.eng = new_eng
+        self.dNdE = new_dNdE
+        self.bin_boundary = get_bin_bound(self.eng)
+        self.log_bin_width = np.diff(np.log(self.bin_boundary))
+
+
     def rebin(self, out_eng):
         """ Re-bins the ``Spectrum`` object according to a new abscissa.
 
