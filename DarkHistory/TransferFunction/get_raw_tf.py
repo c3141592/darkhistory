@@ -6,7 +6,7 @@ import numpy as np
 import physics as phys
 import utilities as utils
 import spectrum
-import transferfunction as tf 
+import TransferFunction.transferfunction as tf 
 
 from astropy.io import fits 
 from tqdm import tqdm 
