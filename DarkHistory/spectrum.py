@@ -535,8 +535,12 @@ class Spectrum:
         new_log_bin_width = np.diff(np.log(new_bin_boundary))
         
         new_spec = Spectrum(new_eng, self.dNdE, self.rs)
-        fac = new_spec.totN(np.arange(new_eng.size+1))/self.totN(np.arange(new_eng.size+1))
-        return new_spec/fac
+        new_dNdE = self.totN('bin',np.arange(new_eng.size+1))/(new_eng * new_log_bin_width)
+
+        self.eng = new_eng
+        self.dNdE = new_dNdE
+        self.bin_boundary = get_bin_bound(self.eng)
+        self.log_bin_width = np.diff(np.log(self.bin_boundary))
 
 
     def rebin(self, out_eng):
